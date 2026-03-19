@@ -6,968 +6,228 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>КБЖУ</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link
-        href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
     <style>
-        :root {
-            --radius: 10px;
-            --sidebar-w: 340px;
-        }
+        :root { --radius: 10px; --sidebar-w: 340px; }
 
         [data-theme="dark"] {
-            --bg: #0c0c0d;
-            --bg2: #141416;
-            --bg3: #1e1e22;
-            --border: #282830;
-            --border2: #38383f;
-            --text: #f2f2f5;
-            --text2: #8a8a9a;
-            --text3: #4a4a58;
-            --accent: #c8ff40;
-            --accent2: #9fd430;
-            --accentT: rgba(200, 255, 64, 0.12);
-            --kal: #ffb240;
-            --bel: #3de8b8;
-            --zhir: #ff6060;
-            --ug: #60aaff;
-            --kalT: rgba(255, 178, 64, 0.13);
-            --belT: rgba(61, 232, 184, 0.11);
-            --zhirT: rgba(255, 96, 96, 0.12);
-            --ugT: rgba(96, 170, 255, 0.11);
+            --bg:#0c0c0d;--bg2:#141416;--bg3:#1e1e22;--border:#282830;--border2:#38383f;
+            --text:#f2f2f5;--text2:#8a8a9a;--text3:#4a4a58;--accent:#c8ff40;--accent2:#9fd430;
+            --accentT:rgba(200,255,64,.12);--kal:#ffb240;--bel:#3de8b8;--zhir:#ff6060;--ug:#60aaff;
+            --kalT:rgba(255,178,64,.13);--belT:rgba(61,232,184,.11);--zhirT:rgba(255,96,96,.12);--ugT:rgba(96,170,255,.11);
         }
-
         [data-theme="light"] {
-            --bg: #f5f5f0;
-            --bg2: #ffffff;
-            --bg3: #ebebea;
-            --border: #e0e0da;
-            --border2: #ccccca;
-            --text: #111114;
-            --text2: #666672;
-            --text3: #aaaaaa;
-            --accent: #4a9600;
-            --accent2: #357000;
-            --accentT: rgba(74, 150, 0, 0.1);
-            --kal: #c06800;
-            --bel: #008a62;
-            --zhir: #cc2020;
-            --ug: #1a66cc;
-            --kalT: rgba(192, 104, 0, 0.1);
-            --belT: rgba(0, 138, 98, 0.1);
-            --zhirT: rgba(204, 32, 32, 0.1);
-            --ugT: rgba(26, 102, 204, 0.1);
+            --bg:#f5f5f0;--bg2:#ffffff;--bg3:#ebebea;--border:#e0e0da;--border2:#ccccca;
+            --text:#111114;--text2:#666672;--text3:#aaaaaa;--accent:#4a9600;--accent2:#357000;
+            --accentT:rgba(74,150,0,.1);--kal:#c06800;--bel:#008a62;--zhir:#cc2020;--ug:#1a66cc;
+            --kalT:rgba(192,104,0,.1);--belT:rgba(0,138,98,.1);--zhirT:rgba(204,32,32,.1);--ugT:rgba(26,102,204,.1);
         }
-
         [data-theme="bright"] {
-            --bg: #0d0022;
-            --bg2: #130030;
-            --bg3: #1c0040;
-            --border: #2a0060;
-            --border2: #3d0090;
-            --text: #f8f0ff;
-            --text2: #b090d0;
-            --text3: #6040a0;
-            --accent: #e040fb;
-            --accent2: #c020e0;
-            --accentT: rgba(224, 64, 251, 0.15);
-            --kal: #ffcc00;
-            --bel: #00e5cc;
-            --zhir: #ff4488;
-            --ug: #44ccff;
-            --kalT: rgba(255, 204, 0, 0.14);
-            --belT: rgba(0, 229, 204, 0.12);
-            --zhirT: rgba(255, 68, 136, 0.13);
-            --ugT: rgba(68, 204, 255, 0.12);
+            --bg:#0d0022;--bg2:#130030;--bg3:#1c0040;--border:#2a0060;--border2:#3d0090;
+            --text:#f8f0ff;--text2:#b090d0;--text3:#6040a0;--accent:#e040fb;--accent2:#c020e0;
+            --accentT:rgba(224,64,251,.15);--kal:#ffcc00;--bel:#00e5cc;--zhir:#ff4488;--ug:#44ccff;
+            --kalT:rgba(255,204,0,.14);--belT:rgba(0,229,204,.12);--zhirT:rgba(255,68,136,.13);--ugT:rgba(68,204,255,.12);
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+        *{box-sizing:border-box;margin:0;padding:0;}
+        html,body{height:100%;}
+        body{background:var(--bg);color:var(--text);font-family:'IBM Plex Sans',sans-serif;font-size:17px;line-height:1.65;transition:background .2s,color .2s;}
 
-        html,
-        body {
-            height: 100%;
-        }
+        /* LOGIN */
+        .login-screen{position:fixed;inset:0;background:var(--bg);z-index:1000;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:28px;}
+        .login-screen.hidden{display:none;}
+        .login-logo{font-family:'IBM Plex Mono',monospace;font-size:36px;font-weight:500;color:var(--accent);letter-spacing:-1px;}
+        .login-logo span{color:var(--text3);font-weight:400;}
+        .login-sub{font-size:15px;color:var(--text2);text-align:center;line-height:1.8;}
+        .btn-google{display:flex;align-items:center;gap:12px;background:var(--bg2);border:1px solid var(--border2);color:var(--text);padding:14px 28px;border-radius:12px;font-size:16px;font-family:'IBM Plex Sans',sans-serif;cursor:pointer;transition:all .15s;}
+        .btn-google:hover{border-color:var(--accent);color:var(--accent);}
+        .btn-google svg{width:20px;height:20px;flex-shrink:0;}
+        .login-hint{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--text3);}
 
-        body {
-            background: var(--bg);
-            color: var(--text);
-            font-family: 'IBM Plex Sans', sans-serif;
-            font-size: 17px;
-            line-height: 1.65;
-            transition: background .2s, color .2s;
-        }
+        /* SYNC */
+        .sync-dot{position:fixed;top:14px;right:18px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text3);z-index:500;opacity:0;transition:opacity .3s;}
+        .sync-dot.show{opacity:1;}
 
-        .app {
-            display: grid;
-            grid-template-columns: var(--sidebar-w) 1fr;
-            min-height: 100vh;
-        }
-
-        .sidebar {
-            background: var(--bg2);
-            border-right: 1px solid var(--border);
-            display: flex;
-            flex-direction: column;
-            position: sticky;
-            top: 0;
-            height: 100vh;
-            overflow-y: auto;
-            transition: background .2s;
-        }
-
-        .main {
-            padding: 44px;
-        }
+        .app{display:grid;grid-template-columns:var(--sidebar-w) 1fr;min-height:100vh;}
+        .sidebar{background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto;transition:background .2s;}
+        .main{padding:44px;}
 
         /* LOGO */
-        .logo {
-            padding: 28px 22px 20px;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .logo-top {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 16px;
-        }
-
-        .logo-title {
-            font-family: 'IBM Plex Mono', monospace;
-            font-size: 22px;
-            font-weight: 500;
-            color: var(--accent);
-            letter-spacing: -.5px;
-        }
-
-        .logo-title span {
-            color: var(--text3);
-            font-weight: 400;
-        }
-
-        .theme-switcher {
-            display: flex;
-            gap: 7px;
-        }
-
-        .theme-btn {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            border: 2px solid transparent;
-            cursor: pointer;
-            transition: border-color .15s, transform .15s;
-            padding: 0;
-        }
-
-        .theme-btn:hover {
-            transform: scale(1.2);
-        }
-
-        .theme-btn.active {
-            border-color: var(--text);
-        }
-
-        .theme-btn[data-t="dark"] {
-            background: #1e1e22;
-            box-shadow: inset 0 0 0 1px #444;
-        }
-
-        .theme-btn[data-t="light"] {
-            background: #f5f5f0;
-            box-shadow: inset 0 0 0 1px #ccc;
-        }
-
-        .theme-btn[data-t="bright"] {
-            background: linear-gradient(135deg, #e040fb, #44ccff);
-        }
-
-        .logo-actions {
-            display: flex;
-            gap: 7px;
-        }
-
-        .logo-btn {
-            flex: 1;
-            background: var(--bg3);
-            border: 1px solid var(--border2);
-            color: var(--text2);
-            padding: 9px 12px;
-            border-radius: var(--radius);
-            font-size: 13px;
-            font-family: 'IBM Plex Mono', monospace;
-            cursor: pointer;
-            transition: all .15s;
-            text-align: center;
-            white-space: nowrap;
-        }
-
-        .logo-btn:hover {
-            border-color: var(--accent);
-            color: var(--accent);
-        }
-
-        .logo-btn.imp:hover {
-            border-color: var(--ug);
-            color: var(--ug);
-        }
-
-        /* WEEK NAV */
-        .week-nav {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 18px 22px;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .week-label {
-            flex: 1;
-            font-family: 'IBM Plex Mono', monospace;
-            font-size: 13px;
-            color: var(--text2);
-            text-align: center;
-            line-height: 1.5;
-        }
-
-        .week-label strong {
-            display: block;
-            font-size: 15px;
-            color: var(--text);
-        }
-
-        .nav-btn {
-            background: none;
-            border: 1px solid var(--border2);
-            color: var(--text2);
-            width: 38px;
-            height: 38px;
-            border-radius: var(--radius);
-            cursor: pointer;
-            font-size: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all .15s;
-            flex-shrink: 0;
-        }
-
-        .nav-btn:hover {
-            border-color: var(--accent);
-            color: var(--accent);
-        }
-
-        /* DAYS */
-        .days-list {
-            flex: 1;
-            overflow-y: auto;
-        }
-
-        .day-item {
-            padding: 13px 22px;
-            cursor: pointer;
-            border-left: 3px solid transparent;
-            transition: background .1s, border-color .1s;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .day-item:hover {
-            background: var(--bg3);
-        }
-
-        .day-item.active {
-            border-left-color: var(--accent);
-            background: var(--bg3);
-        }
-
-        .day-item .dname {
-            font-size: 15px;
-            font-weight: 500;
-            color: var(--text);
-            display: flex;
-            align-items: center;
-            gap: 7px;
-        }
-
-        .today-pill {
-            font-family: 'IBM Plex Mono', monospace;
-            font-size: 10px;
-            background: var(--accentT);
-            color: var(--accent);
-            padding: 2px 6px;
-            border-radius: 4px;
-        }
-
-        .day-item .ddate {
-            font-family: 'IBM Plex Mono', monospace;
-            font-size: 12px;
-            color: var(--text3);
-            margin-top: 2px;
-        }
-
-        .day-item .dcal {
-            font-family: 'IBM Plex Mono', monospace;
-            font-size: 13px;
-            color: var(--kal);
-        }
-
-        .day-item.empty .dcal {
-            color: var(--text3);
-        }
-
-        /* WEEK TOTALS */
-        .week-totals {
-            padding: 18px 22px;
-            border-top: 1px solid var(--border);
-        }
-
-        .wt-title {
-            font-size: 11px;
-            color: var(--text3);
-            letter-spacing: .1em;
-            text-transform: uppercase;
-            margin-bottom: 10px;
-            font-family: 'IBM Plex Mono', monospace;
-        }
-
-        .wt-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px;
-        }
-
-        .wt-item {
-            background: var(--bg3);
-            border-radius: var(--radius);
-            padding: 11px 14px;
-        }
-
-        .wt-val {
-            font-family: 'IBM Plex Mono', monospace;
-            font-size: 18px;
-            font-weight: 500;
-        }
-
-        .wt-key {
-            font-size: 12px;
-            color: var(--text3);
-            margin-top: 3px;
-        }
-
-        .wt-item.k .wt-val {
-            color: var(--kal);
-        }
-
-        .wt-item.b .wt-val {
-            color: var(--bel);
-        }
-
-        .wt-item.j .wt-val {
-            color: var(--zhir);
-        }
-
-        .wt-item.u .wt-val {
-            color: var(--ug);
-        }
-
-        /* MAIN */
-        .day-header {
-            display: flex;
-            align-items: baseline;
-            gap: 14px;
-            margin-bottom: 26px;
-        }
-
-        .day-header h1 {
-            font-size: 32px;
-            font-weight: 300;
-        }
-
-        .day-header .dh-date {
-            font-family: 'IBM Plex Mono', monospace;
-            font-size: 14px;
-            color: var(--text3);
-        }
-
-        .day-totals-bar {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 12px;
-            margin-bottom: 34px;
-        }
-
-        .dt-card {
-            background: var(--bg2);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 18px 20px;
-            transition: border-color .15s;
-        }
-
-        .dt-card:hover {
-            border-color: var(--border2);
-        }
-
-        .dt-val {
-            font-family: 'IBM Plex Mono', monospace;
-            font-size: 28px;
-            font-weight: 500;
-        }
-
-        .dt-key {
-            font-size: 13px;
-            color: var(--text3);
-            margin-top: 5px;
-        }
-
-        .dt-card.k .dt-val {
-            color: var(--kal);
-        }
-
-        .dt-card.b .dt-val {
-            color: var(--bel);
-        }
-
-        .dt-card.j .dt-val {
-            color: var(--zhir);
-        }
-
-        .dt-card.u .dt-val {
-            color: var(--ug);
-        }
-
-        /* MEALS */
-        .meal-section {
-            margin-bottom: 32px;
-        }
-
-        .meal-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 10px;
-        }
-
-        .meal-name {
-            font-size: 12px;
-            font-weight: 500;
-            color: var(--text2);
-            text-transform: uppercase;
-            letter-spacing: .12em;
-            font-family: 'IBM Plex Mono', monospace;
-        }
-
-        .meal-kcal {
-            font-family: 'IBM Plex Mono', monospace;
-            font-size: 13px;
-            color: var(--kal);
-        }
-
-        .food-list {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-
-        .food-row {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 12px 16px;
-            background: var(--bg2);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            transition: border-color .15s;
-        }
-
-        .food-row:hover {
-            border-color: var(--border2);
-        }
-
-        .food-row:hover .del-btn {
-            opacity: 1;
-        }
-
-        .food-name {
-            flex: 1;
-            font-size: 15px;
-        }
-
-        .food-amount {
-            font-size: 13px;
-            color: var(--text3);
-            font-family: 'IBM Plex Mono', monospace;
-            white-space: nowrap;
-        }
-
-        .food-badges {
-            display: flex;
-            gap: 5px;
-            flex-shrink: 0;
-        }
-
-        .badge {
-            font-family: 'IBM Plex Mono', monospace;
-            font-size: 12px;
-            padding: 3px 8px;
-            border-radius: 4px;
-            white-space: nowrap;
-        }
-
-        .badge.k {
-            background: var(--kalT);
-            color: var(--kal);
-        }
-
-        .badge.b {
-            background: var(--belT);
-            color: var(--bel);
-        }
-
-        .badge.j {
-            background: var(--zhirT);
-            color: var(--zhir);
-        }
-
-        .badge.u {
-            background: var(--ugT);
-            color: var(--ug);
-        }
-
-        .del-btn {
-            background: none;
-            border: none;
-            color: var(--text3);
-            cursor: pointer;
-            font-size: 20px;
-            line-height: 1;
-            padding: 0 3px;
-            opacity: 0;
-            transition: opacity .15s, color .15s;
-        }
-
-        .del-btn:hover {
-            color: var(--zhir);
-        }
-
-        .edit-btn {
-            background: none;
-            border: none;
-            color: var(--text3);
-            cursor: pointer;
-            font-size: 15px;
-            line-height: 1;
-            padding: 0 3px;
-            opacity: 0;
-            transition: opacity .15s, color .15s;
-        }
-
-        .edit-btn:hover {
-            color: var(--accent);
-        }
-
-        .food-row:hover .del-btn,
-        .food-row:hover .edit-btn {
-            opacity: 1;
-        }
-
-        /* CONFIRM MODAL */
-        .confirm-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, .7);
-            z-index: 300;
-            display: none;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .confirm-overlay.open {
-            display: flex;
-        }
-
-        .confirm-box {
-            background: var(--bg2);
-            border: 1px solid var(--border2);
-            border-radius: 12px;
-            padding: 28px 32px;
-            width: min(360px, calc(100vw - 48px));
-            text-align: center;
-        }
-
-        .confirm-box p {
-            font-size: 16px;
-            margin-bottom: 8px;
-        }
-
-        .confirm-box small {
-            font-size: 13px;
-            color: var(--text2);
-        }
-
-        .confirm-actions {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            margin-top: 22px;
-        }
-
-        .confirm-yes {
-            background: var(--zhir);
-            color: #fff;
-            border: none;
-            padding: 10px 24px;
-            border-radius: var(--radius);
-            font-size: 15px;
-            font-family: 'IBM Plex Sans', sans-serif;
-            cursor: pointer;
-            transition: opacity .15s;
-        }
-
-        .confirm-yes:hover {
-            opacity: .85;
-        }
-
-        .confirm-no {
-            background: none;
-            border: 1px solid var(--border2);
-            color: var(--text2);
-            padding: 10px 20px;
-            border-radius: var(--radius);
-            font-size: 15px;
-            font-family: 'IBM Plex Sans', sans-serif;
-            cursor: pointer;
-            transition: all .15s;
-        }
-
-        .confirm-no:hover {
-            border-color: var(--text2);
-        }
-
-        .add-to-meal button {
-            background: none;
-            border: 1px dashed var(--border2);
-            color: var(--text3);
-            padding: 8px 16px;
-            border-radius: var(--radius);
-            cursor: pointer;
-            font-size: 14px;
-            font-family: 'IBM Plex Sans', sans-serif;
-            transition: all .15s;
-        }
-
-        .add-to-meal button:hover {
-            border-color: var(--accent);
-            color: var(--accent);
-        }
-
-        /* ADD PANEL */
-        .add-panel {
-            position: fixed;
-            bottom: 0;
-            left: var(--sidebar-w);
-            right: 0;
-            background: var(--bg2);
-            border-top: 1px solid var(--border);
-            padding: 18px 36px;
-            display: flex;
-            gap: 12px;
-            align-items: flex-end;
-            z-index: 100;
-            transform: translateY(100%);
-            transition: transform .22s ease;
-        }
-
-        .add-panel.open {
-            transform: translateY(0);
-        }
-
-        .add-panel-title {
-            font-size: 12px;
-            color: var(--text3);
-            text-transform: uppercase;
-            letter-spacing: .08em;
-            font-family: 'IBM Plex Mono', monospace;
-            margin-bottom: 6px;
-        }
-
-        .add-panel .field {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-
-        .add-panel .field.grow {
-            flex: 1;
-        }
-
-        .add-panel input {
-            background: var(--bg3);
-            border: 1px solid var(--border2);
-            color: var(--text);
-            padding: 10px 14px;
-            border-radius: var(--radius);
-            font-family: 'IBM Plex Sans', sans-serif;
-            font-size: 15px;
-            outline: none;
-            width: 100%;
-            transition: border-color .15s;
-        }
-
-        .add-panel input:focus {
-            border-color: var(--accent);
-        }
-
-        .add-panel input::placeholder {
-            color: var(--text3);
-        }
-
-        .field-label {
-            font-size: 12px;
-            color: var(--text3);
-        }
-
-        .btn-add {
-            background: var(--accent);
-            color: #0a0a0a;
-            border: none;
-            padding: 11px 24px;
-            border-radius: var(--radius);
-            font-family: 'IBM Plex Mono', monospace;
-            font-size: 15px;
-            font-weight: 500;
-            cursor: pointer;
-            white-space: nowrap;
-            transition: background .15s;
-        }
-
-        .btn-add:hover {
-            background: var(--accent2);
-        }
-
-        .btn-cancel {
-            background: none;
-            border: 1px solid var(--border2);
-            color: var(--text2);
-            padding: 11px 18px;
-            border-radius: var(--radius);
-            cursor: pointer;
-            font-size: 15px;
-            font-family: 'IBM Plex Sans', sans-serif;
-            transition: all .15s;
-        }
-
-        .btn-cancel:hover {
-            border-color: var(--text2);
-        }
-
-        /* SEARCH */
-        .search-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, .75);
-            z-index: 200;
-            display: none;
-            align-items: flex-start;
-            justify-content: center;
-            padding-top: 80px;
-        }
-
-        .search-overlay.open {
-            display: flex;
-        }
-
-        .search-box {
-            background: var(--bg2);
-            border: 1px solid var(--border2);
-            border-radius: 12px;
-            width: min(580px, calc(100vw - 32px));
-            max-height: 72vh;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
-
-        .search-input-wrap {
-            padding: 18px 20px;
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .search-input-wrap input {
-            flex: 1;
-            background: none;
-            border: none;
-            color: var(--text);
-            font-size: 18px;
-            font-family: 'IBM Plex Sans', sans-serif;
-            outline: none;
-        }
-
-        .search-input-wrap input::placeholder {
-            color: var(--text3);
-        }
-
-        .search-results {
-            overflow-y: auto;
-            flex: 1;
-        }
-
-        .search-result {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 14px 20px;
-            cursor: pointer;
-            border-bottom: 1px solid var(--border);
-            transition: background .1s;
-        }
-
-        .search-result:hover {
-            background: var(--bg3);
-        }
-
-        .sr-name {
-            flex: 1;
-            font-size: 15px;
-        }
-
-        .sr-kcal {
-            font-family: 'IBM Plex Mono', monospace;
-            font-size: 13px;
-            color: var(--kal);
-        }
-
-        .search-empty {
-            padding: 28px;
-            text-align: center;
-            color: var(--text3);
-            font-size: 15px;
-        }
-
-        /* MOBILE NAV */
-        .mobile-nav {
-            display: none;
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: var(--bg2);
-            border-top: 1px solid var(--border);
-            padding: 12px 18px;
-            z-index: 90;
-            gap: 10px;
-            align-items: center;
-        }
-
-        .mob-day-select {
-            flex: 1;
-            background: var(--bg3);
-            border: 1px solid var(--border2);
-            color: var(--text);
-            padding: 10px 12px;
-            border-radius: var(--radius);
-            font-size: 15px;
-            font-family: 'IBM Plex Sans', sans-serif;
-            outline: none;
-        }
-
-        .mob-week-btn {
-            background: none;
-            border: 1px solid var(--border2);
-            color: var(--text2);
-            width: 44px;
-            height: 44px;
-            border-radius: var(--radius);
-            cursor: pointer;
-            font-size: 22px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            transition: all .15s;
-        }
-
-        .mob-week-btn:hover {
-            border-color: var(--accent);
-            color: var(--accent);
-        }
-
-        /* RESPONSIVE */
-        @media(max-width:720px) {
-            :root {
-                --sidebar-w: 0px;
-            }
-
-            .app {
-                grid-template-columns: 1fr;
-            }
-
-            .sidebar {
-                display: none;
-            }
-
-            .main {
-                padding: 20px 18px 100px;
-            }
-
-            .mobile-nav {
-                display: flex;
-            }
-
-            .add-panel {
-                left: 0;
-                padding: 14px 18px 90px;
-                flex-wrap: wrap;
-            }
-
-            .add-panel .field.grow {
-                width: 100%;
-            }
-
-            .day-totals-bar {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .dt-val {
-                font-size: 22px;
-            }
-
-            .food-row {
-                flex-wrap: wrap;
-            }
-
-            .del-btn {
-                opacity: 1;
-            }
-
-            .search-overlay {
-                padding-top: 40px;
-            }
-        }
-
-        @media(max-width:420px) {
-            .add-to-meal {
-                flex-direction: column;
-            }
-
-            .food-badges {
-                flex-wrap: wrap;
-            }
+        .logo{padding:28px 22px 20px;border-bottom:1px solid var(--border);}
+        .logo-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+        .logo-title{font-family:'IBM Plex Mono',monospace;font-size:22px;font-weight:500;color:var(--accent);letter-spacing:-.5px;}
+        .logo-title span{color:var(--text3);font-weight:400;}
+        .theme-switcher{display:flex;gap:7px;}
+        .theme-btn{width:30px;height:30px;border-radius:50%;border:2px solid transparent;cursor:pointer;transition:border-color .15s,transform .15s;padding:0;}
+        .theme-btn:hover{transform:scale(1.2);}
+        .theme-btn.active{border-color:var(--text);}
+        .theme-btn[data-t="dark"]{background:#1e1e22;box-shadow:inset 0 0 0 1px #444;}
+        .theme-btn[data-t="light"]{background:#f5f5f0;box-shadow:inset 0 0 0 1px #ccc;}
+        .theme-btn[data-t="bright"]{background:linear-gradient(135deg,#e040fb,#44ccff);}
+
+        .user-row{display:flex;align-items:center;gap:8px;margin-bottom:12px;}
+        .user-avatar{width:26px;height:26px;border-radius:50%;background:var(--bg3);border:1px solid var(--border2);flex-shrink:0;object-fit:cover;}
+        .user-name{flex:1;font-size:12px;color:var(--text2);font-family:'IBM Plex Mono',monospace;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+        .btn-logout{background:none;border:none;color:var(--text3);cursor:pointer;font-size:11px;padding:3px 6px;border-radius:4px;transition:color .15s;font-family:'IBM Plex Mono',monospace;}
+        .btn-logout:hover{color:var(--zhir);}
+
+        .logo-actions{display:flex;gap:7px;}
+        .logo-btn{flex:1;background:var(--bg3);border:1px solid var(--border2);color:var(--text2);padding:9px 12px;border-radius:var(--radius);font-size:13px;font-family:'IBM Plex Mono',monospace;cursor:pointer;transition:all .15s;text-align:center;white-space:nowrap;}
+        .logo-btn:hover{border-color:var(--accent);color:var(--accent);}
+        .logo-btn.imp:hover{border-color:var(--ug);color:var(--ug);}
+
+        .week-nav{display:flex;align-items:center;gap:8px;padding:18px 22px;border-bottom:1px solid var(--border);}
+        .week-label{flex:1;font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--text2);text-align:center;line-height:1.5;}
+        .week-label strong{display:block;font-size:15px;color:var(--text);}
+        .nav-btn{background:none;border:1px solid var(--border2);color:var(--text2);width:38px;height:38px;border-radius:var(--radius);cursor:pointer;font-size:20px;display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0;}
+        .nav-btn:hover{border-color:var(--accent);color:var(--accent);}
+
+        .days-list{flex:1;overflow-y:auto;}
+        .day-item{padding:13px 22px;cursor:pointer;border-left:3px solid transparent;transition:background .1s,border-color .1s;display:flex;align-items:center;justify-content:space-between;}
+        .day-item:hover{background:var(--bg3);}
+        .day-item.active{border-left-color:var(--accent);background:var(--bg3);}
+        .day-item .dname{font-size:15px;font-weight:500;color:var(--text);display:flex;align-items:center;gap:7px;}
+        .today-pill{font-family:'IBM Plex Mono',monospace;font-size:10px;background:var(--accentT);color:var(--accent);padding:2px 6px;border-radius:4px;}
+        .day-item .ddate{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--text3);margin-top:2px;}
+        .day-item .dcal{font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--kal);}
+        .day-item.empty .dcal{color:var(--text3);}
+
+        .week-totals{padding:18px 22px;border-top:1px solid var(--border);}
+        .wt-title{font-size:11px;color:var(--text3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px;font-family:'IBM Plex Mono',monospace;}
+        .wt-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+        .wt-item{background:var(--bg3);border-radius:var(--radius);padding:11px 14px;}
+        .wt-val{font-family:'IBM Plex Mono',monospace;font-size:18px;font-weight:500;}
+        .wt-key{font-size:12px;color:var(--text3);margin-top:3px;}
+        .wt-item.k .wt-val{color:var(--kal);}
+        .wt-item.b .wt-val{color:var(--bel);}
+        .wt-item.j .wt-val{color:var(--zhir);}
+        .wt-item.u .wt-val{color:var(--ug);}
+
+        .day-header{display:flex;align-items:baseline;gap:14px;margin-bottom:26px;}
+        .day-header h1{font-size:32px;font-weight:300;}
+        .day-header .dh-date{font-family:'IBM Plex Mono',monospace;font-size:14px;color:var(--text3);}
+        .day-totals-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:34px;}
+        .dt-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px;transition:border-color .15s;}
+        .dt-card:hover{border-color:var(--border2);}
+        .dt-val{font-family:'IBM Plex Mono',monospace;font-size:28px;font-weight:500;}
+        .dt-key{font-size:13px;color:var(--text3);margin-top:5px;}
+        .dt-card.k .dt-val{color:var(--kal);}
+        .dt-card.b .dt-val{color:var(--bel);}
+        .dt-card.j .dt-val{color:var(--zhir);}
+        .dt-card.u .dt-val{color:var(--ug);}
+
+        .meal-section{margin-bottom:32px;}
+        .meal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+        .meal-name{font-size:12px;font-weight:500;color:var(--text2);text-transform:uppercase;letter-spacing:.12em;font-family:'IBM Plex Mono',monospace;}
+        .meal-kcal{font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--kal);}
+        .food-list{display:flex;flex-direction:column;gap:6px;}
+        .food-row{display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);transition:border-color .15s;}
+        .food-row:hover{border-color:var(--border2);}
+        .food-name{flex:1;font-size:15px;}
+        .food-amount{font-size:13px;color:var(--text3);font-family:'IBM Plex Mono',monospace;white-space:nowrap;}
+        .food-badges{display:flex;gap:5px;flex-shrink:0;}
+        .badge{font-family:'IBM Plex Mono',monospace;font-size:12px;padding:3px 8px;border-radius:4px;white-space:nowrap;}
+        .badge.k{background:var(--kalT);color:var(--kal);}
+        .badge.b{background:var(--belT);color:var(--bel);}
+        .badge.j{background:var(--zhirT);color:var(--zhir);}
+        .badge.u{background:var(--ugT);color:var(--ug);}
+        .del-btn{background:none;border:none;color:var(--text3);cursor:pointer;font-size:20px;line-height:1;padding:0 3px;opacity:0;transition:opacity .15s,color .15s;}
+        .del-btn:hover{color:var(--zhir);}
+        .edit-btn{background:none;border:none;color:var(--text3);cursor:pointer;font-size:15px;line-height:1;padding:0 3px;opacity:0;transition:opacity .15s,color .15s;}
+        .edit-btn:hover{color:var(--accent);}
+        .food-row:hover .del-btn,.food-row:hover .edit-btn{opacity:1;}
+
+        .confirm-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:300;display:none;align-items:center;justify-content:center;}
+        .confirm-overlay.open{display:flex;}
+        .confirm-box{background:var(--bg2);border:1px solid var(--border2);border-radius:12px;padding:28px 32px;width:min(360px,calc(100vw - 48px));text-align:center;}
+        .confirm-box p{font-size:16px;margin-bottom:8px;}
+        .confirm-box small{font-size:13px;color:var(--text2);}
+        .confirm-actions{display:flex;gap:10px;justify-content:center;margin-top:22px;}
+        .confirm-yes{background:var(--zhir);color:#fff;border:none;padding:10px 24px;border-radius:var(--radius);font-size:15px;font-family:'IBM Plex Sans',sans-serif;cursor:pointer;transition:opacity .15s;}
+        .confirm-yes:hover{opacity:.85;}
+        .confirm-no{background:none;border:1px solid var(--border2);color:var(--text2);padding:10px 20px;border-radius:var(--radius);font-size:15px;font-family:'IBM Plex Sans',sans-serif;cursor:pointer;transition:all .15s;}
+        .confirm-no:hover{border-color:var(--text2);}
+
+        .add-to-meal{display:flex;gap:8px;margin-top:10px;}
+        .add-to-meal button{background:none;border:1px dashed var(--border2);color:var(--text3);padding:8px 16px;border-radius:var(--radius);cursor:pointer;font-size:14px;font-family:'IBM Plex Sans',sans-serif;transition:all .15s;}
+        .add-to-meal button:hover{border-color:var(--accent);color:var(--accent);}
+
+        .add-panel{position:fixed;bottom:0;left:var(--sidebar-w);right:0;background:var(--bg2);border-top:1px solid var(--border);padding:18px 36px;display:flex;gap:12px;align-items:flex-end;z-index:100;transform:translateY(100%);transition:transform .22s ease;}
+        .add-panel.open{transform:translateY(0);}
+        .add-panel-title{font-size:12px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;font-family:'IBM Plex Mono',monospace;margin-bottom:6px;}
+        .add-panel .field{display:flex;flex-direction:column;gap:4px;}
+        .add-panel .field.grow{flex:1;}
+        .add-panel input{background:var(--bg3);border:1px solid var(--border2);color:var(--text);padding:10px 14px;border-radius:var(--radius);font-family:'IBM Plex Sans',sans-serif;font-size:15px;outline:none;width:100%;transition:border-color .15s;}
+        .add-panel input:focus{border-color:var(--accent);}
+        .add-panel input::placeholder{color:var(--text3);}
+        .field-label{font-size:12px;color:var(--text3);}
+        .btn-add{background:var(--accent);color:#0a0a0a;border:none;padding:11px 24px;border-radius:var(--radius);font-family:'IBM Plex Mono',monospace;font-size:15px;font-weight:500;cursor:pointer;white-space:nowrap;transition:background .15s;}
+        .btn-add:hover{background:var(--accent2);}
+        .btn-cancel{background:none;border:1px solid var(--border2);color:var(--text2);padding:11px 18px;border-radius:var(--radius);cursor:pointer;font-size:15px;font-family:'IBM Plex Sans',sans-serif;transition:all .15s;}
+        .btn-cancel:hover{border-color:var(--text2);}
+
+        .search-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:200;display:none;align-items:flex-start;justify-content:center;padding-top:80px;}
+        .search-overlay.open{display:flex;}
+        .search-box{background:var(--bg2);border:1px solid var(--border2);border-radius:12px;width:min(580px,calc(100vw - 32px));max-height:72vh;display:flex;flex-direction:column;overflow:hidden;}
+        .search-input-wrap{padding:18px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;}
+        .search-input-wrap input{flex:1;background:none;border:none;color:var(--text);font-size:18px;font-family:'IBM Plex Sans',sans-serif;outline:none;}
+        .search-input-wrap input::placeholder{color:var(--text3);}
+        .search-results{overflow-y:auto;flex:1;}
+        .search-result{display:flex;align-items:center;gap:10px;padding:14px 20px;cursor:pointer;border-bottom:1px solid var(--border);transition:background .1s;}
+        .search-result:hover{background:var(--bg3);}
+        .sr-name{flex:1;font-size:15px;}
+        .sr-kcal{font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--kal);}
+        .search-empty{padding:28px;text-align:center;color:var(--text3);font-size:15px;}
+
+        .mobile-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--bg2);border-top:1px solid var(--border);padding:12px 18px;z-index:90;gap:10px;align-items:center;}
+        .mob-day-select{flex:1;background:var(--bg3);border:1px solid var(--border2);color:var(--text);padding:10px 12px;border-radius:var(--radius);font-size:15px;font-family:'IBM Plex Sans',sans-serif;outline:none;}
+        .mob-week-btn{background:none;border:1px solid var(--border2);color:var(--text2);width:44px;height:44px;border-radius:var(--radius);cursor:pointer;font-size:22px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s;}
+        .mob-week-btn:hover{border-color:var(--accent);color:var(--accent);}
+
+        @media(max-width:720px){
+            :root{--sidebar-w:0px;}
+            .app{grid-template-columns:1fr;}
+            .sidebar{display:none;}
+            .main{padding:20px 18px 100px;}
+            .mobile-nav{display:flex;}
+            .add-panel{left:0;padding:14px 18px 90px;flex-wrap:wrap;}
+            .add-panel .field.grow{width:100%;}
+            .day-totals-bar{grid-template-columns:repeat(2,1fr);}
+            .dt-val{font-size:22px;}
+            .food-row{flex-wrap:wrap;}
+            .del-btn{opacity:1;}
+            .search-overlay{padding-top:40px;}
+        }
+        @media(max-width:420px){
+            .add-to-meal{flex-direction:column;}
+            .food-badges{flex-wrap:wrap;}
         }
     </style>
 </head>
 
 <body>
-    <div class="app">
+    <!-- LOGIN -->
+    <div class="login-screen" id="loginScreen">
+        <div class="login-logo">кбжу<span>.трекер</span></div>
+        <div class="login-sub">Войди чтобы данные синхронизировались<br>между телефоном и компьютером</div>
+        <button class="btn-google" id="btnGoogleLogin">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+                <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+            </svg>
+            Войти через Google
+        </button>
+        <div class="login-hint" id="loginHint"></div>
+    </div>
+
+    <div class="sync-dot" id="syncDot">↑ сохранение...</div>
+
+    <div class="app" id="appRoot" style="display:none">
         <aside class="sidebar">
             <div class="logo">
                 <div class="logo-top">
@@ -978,11 +238,15 @@
                         <button class="theme-btn" data-t="bright" onclick="setTheme('bright')" title="Яркая"></button>
                     </div>
                 </div>
+                <div class="user-row">
+                    <img class="user-avatar" id="userAvatar" src="" alt="">
+                    <span class="user-name" id="userName">—</span>
+                    <button class="btn-logout" onclick="doSignOut()">выйти</button>
+                </div>
                 <div class="logo-actions">
                     <button class="logo-btn" onclick="exportJSON()">↓ отчёт</button>
-                    <button class="logo-btn" style="flex:none;width:auto;padding:9px 10px;" title="Скачать бэкап данных" onclick="backupData()">💾</button>
-                    <button class="logo-btn imp" onclick="document.getElementById('importFile').click()">↑
-                        загрузить</button>
+                    <button class="logo-btn" style="flex:none;width:auto;padding:9px 10px;" title="Скачать бэкап" onclick="backupData()">💾</button>
+                    <button class="logo-btn imp" onclick="document.getElementById('importFile').click()">↑ загрузить</button>
                     <input type="file" id="importFile" accept=".json" style="display:none" onchange="importJSON(event)">
                 </div>
             </div>
@@ -995,22 +259,10 @@
             <div class="week-totals">
                 <div class="wt-title">Неделя итого</div>
                 <div class="wt-grid">
-                    <div class="wt-item k">
-                        <div class="wt-val" id="wt-k">0</div>
-                        <div class="wt-key">ккал</div>
-                    </div>
-                    <div class="wt-item b">
-                        <div class="wt-val" id="wt-b">0</div>
-                        <div class="wt-key">белки г</div>
-                    </div>
-                    <div class="wt-item j">
-                        <div class="wt-val" id="wt-j">0</div>
-                        <div class="wt-key">жиры г</div>
-                    </div>
-                    <div class="wt-item u">
-                        <div class="wt-val" id="wt-u">0</div>
-                        <div class="wt-key">углев г</div>
-                    </div>
+                    <div class="wt-item k"><div class="wt-val" id="wt-k">0</div><div class="wt-key">ккал</div></div>
+                    <div class="wt-item b"><div class="wt-val" id="wt-b">0</div><div class="wt-key">белки г</div></div>
+                    <div class="wt-item j"><div class="wt-val" id="wt-j">0</div><div class="wt-key">жиры г</div></div>
+                    <div class="wt-item u"><div class="wt-val" id="wt-u">0</div><div class="wt-key">углев г</div></div>
                 </div>
             </div>
         </aside>
@@ -1039,26 +291,12 @@
                 </div>
             </div>
         </div>
-        <div class="field" style="width:80px;">
-            <div class="field-label">ккал / 100г</div><input type="number" id="inp-k" placeholder="0" min="0"
-                oninput="recalc()">
-        </div>
-        <div class="field" style="width:76px;">
-            <div class="field-label">белки / 100г</div><input type="number" id="inp-b" placeholder="0" min="0"
-                step="0.1" oninput="recalc()">
-        </div>
-        <div class="field" style="width:76px;">
-            <div class="field-label">жиры / 100г</div><input type="number" id="inp-j" placeholder="0" min="0" step="0.1"
-                oninput="recalc()">
-        </div>
-        <div class="field" style="width:76px;">
-            <div class="field-label">углев / 100г</div><input type="number" id="inp-u" placeholder="0" min="0"
-                step="0.1" oninput="recalc()">
-        </div>
+        <div class="field" style="width:80px;"><div class="field-label">ккал / 100г</div><input type="number" id="inp-k" placeholder="0" min="0" oninput="recalc()"></div>
+        <div class="field" style="width:76px;"><div class="field-label">белки / 100г</div><input type="number" id="inp-b" placeholder="0" min="0" step="0.1" oninput="recalc()"></div>
+        <div class="field" style="width:76px;"><div class="field-label">жиры / 100г</div><input type="number" id="inp-j" placeholder="0" min="0" step="0.1" oninput="recalc()"></div>
+        <div class="field" style="width:76px;"><div class="field-label">углев / 100г</div><input type="number" id="inp-u" placeholder="0" min="0" step="0.1" oninput="recalc()"></div>
         <div style="display:flex;flex-direction:column;gap:5px;align-items:center;">
-            <div id="recalc-preview"
-                style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--kal);text-align:center;min-height:16px;">
-            </div>
+            <div id="recalc-preview" style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--kal);text-align:center;min-height:16px;"></div>
             <button class="btn-add" onclick="submitEntry()"><span id="btn-add-label">Добавить</span></button>
             <button class="btn-cancel" onclick="closePanel()">Отмена</button>
         </div>
@@ -1088,24 +326,97 @@
     </div>
 
     <script>
-        const DAYS_RU = ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'];
-        const MEALS = ['Завтрак', 'Обед', 'Перекус', 'Предтрен', 'Ужин', 'Перед сном'];
+        // ── FIREBASE ─────────────────────────────────────────────────────
+        firebase.initializeApp({
+            apiKey:"AIzaSyAAW8J-TXfBZ_MAoRS7t3f75sGaesCy3ag",
+            authDomain:"kbju-eeffd.firebaseapp.com",
+            projectId:"kbju-eeffd",
+            storageBucket:"kbju-eeffd.firebasestorage.app",
+            messagingSenderId:"973550465326",
+            appId:"1:973550465326:web:a0bf403ab221417ec08abf"
+        });
+        const auth = firebase.auth();
+        const db   = firebase.firestore();
+
+        let currentUser = null;
+        let unsubSnap   = null;
+        let saveTimer   = null;
+
+        // ── AUTH ─────────────────────────────────────────────────────────
+        document.getElementById('btnGoogleLogin').onclick = () => {
+            document.getElementById('loginHint').textContent = 'открываем Google...';
+            auth.signInWithPopup(new firebase.auth.GoogleAuthProvider())
+                .catch(err => {
+                    document.getElementById('loginHint').textContent = 'Ошибка: ' + err.message;
+                });
+        };
+
+        function doSignOut() {
+            if (!confirm('Выйти из аккаунта?')) return;
+            if (unsubSnap) unsubSnap();
+            auth.signOut();
+        }
+
+        auth.onAuthStateChanged(user => {
+            currentUser = user;
+            if (user) {
+                document.getElementById('loginScreen').classList.add('hidden');
+                document.getElementById('appRoot').style.display = 'grid';
+                document.getElementById('userName').textContent = user.displayName || user.email;
+                const av = document.getElementById('userAvatar');
+                av.src = user.photoURL || '';
+                av.style.display = user.photoURL ? 'block' : 'none';
+                subscribeToData();
+            } else {
+                if (unsubSnap) { unsubSnap(); unsubSnap = null; }
+                state.data = {};
+                document.getElementById('loginScreen').classList.remove('hidden');
+                document.getElementById('loginHint').textContent = '';
+                document.getElementById('appRoot').style.display = 'none';
+            }
+        });
+
+        // ── FIRESTORE ────────────────────────────────────────────────────
+        function userDoc() { return db.collection('users').doc(currentUser.uid); }
+
+        function subscribeToData() {
+            if (unsubSnap) unsubSnap();
+            unsubSnap = userDoc().onSnapshot(snap => {
+                state.data = snap.exists ? (snap.data().data || {}) : {};
+                if (!state.activeDay) state.activeDay = dateKey(new Date());
+                render();
+            });
+        }
+
+        function saveData() {
+            if (!currentUser) return;
+            clearTimeout(saveTimer);
+            const dot = document.getElementById('syncDot');
+            dot.classList.add('show');
+            saveTimer = setTimeout(() => {
+                userDoc().set({ data: state.data }, { merge: true })
+                    .then(() => dot.classList.remove('show'))
+                    .catch(e => { dot.classList.remove('show'); console.error(e); });
+            }, 600);
+        }
+
+        // ── APP ──────────────────────────────────────────────────────────
+        const DAYS_RU = ['Воскресенье','Понедельник','Вторник','Среда','Четверг','Пятница','Суббота'];
+        const MEALS   = ['Завтрак','Обед','Перекус','Предтрен','Ужин','Перед сном'];
         const DB = [
-            { n: 'Куриная грудь (варёная)', k: 140, b: 29,   j: 2,   u: 0.1 },
-            { n: 'Творог 5%',               k: 121, b: 16.8,  j: 5,   u: 1.9 },
-            { n: 'Гречка варёная',          k: 350, b: 12.8, j: 2.7, u: 61 },
-            { n: 'Овсянка на воде',         k: 350,  b: 12,   j: 1.5, u: 15 },
-            { n: 'Яйцо куриное (1 шт)',     k: 143,  b: 13,   j: 11,   u: 0.7 },
-            { n: 'Рис варёный',             k: 360, b: 6.7, j: 0.6, u: 80 },
-            { n: 'Банан',                   k: 92,  b: 1.1, j: 0.4, u: 22 },
-            { n: 'Кефир 1%',                k: 30,  b: 3, j: 1,   u: 3.8 },
-            { n: 'Курица Копч.',            k: 113, b: 23.6, j: 1.9, u: 0.4},
-            {n: 'Арахис',                   k: 620, b: 26, j: 50, u: 14},
+            {n:'Куриная грудь (варёная)', k:140, b:29,   j:2,   u:0.1},
+            {n:'Творог 5%',               k:121, b:16.8, j:5,   u:1.9},
+            {n:'Гречка варёная',          k:350, b:12.8, j:2.7, u:61 },
+            {n:'Овсянка на воде',         k:350, b:12,   j:1.5, u:15 },
+            {n:'Яйцо куриное (1 шт)',     k:143, b:13,   j:11,  u:0.7},
+            {n:'Рис варёный',             k:360, b:6.7,  j:0.6, u:80 },
+            {n:'Банан',                   k:92,  b:1.1,  j:0.4, u:22 },
+            {n:'Кефир 1%',                k:30,  b:3,    j:1,   u:3.8},
+            {n:'Курица Копч.',            k:113, b:23.6, j:1.9, u:0.4},
+            {n:'Арахис',                  k:620, b:26,   j:50,  u:14 },
         ];
 
-        let state = { weekOffset: 0, activeDay: null, data: {} };
-        function loadData() { try { state.data = JSON.parse(localStorage.getItem('kbju_data') || '{}'); } catch { state.data = {}; } }
-        function saveData() { localStorage.setItem('kbju_data', JSON.stringify(state.data)); }
+        let state = { weekOffset:0, activeDay:null, data:{} };
 
         function setTheme(t) {
             document.documentElement.setAttribute('data-theme', t);
@@ -1115,299 +426,259 @@
         (() => { setTheme(localStorage.getItem('kbju_theme') || 'dark'); })();
 
         function getWeekDates(offset) {
-            const now = new Date(), dow = now.getDay(), mon = new Date(now);
-            mon.setDate(now.getDate() - (dow === 0 ? 6 : dow - 1) + offset * 7); mon.setHours(0, 0, 0, 0);
-            return Array.from({ length: 7 }, (_, i) => { const d = new Date(mon); d.setDate(mon.getDate() + i); return d; });
+            const now=new Date(), dow=now.getDay(), mon=new Date(now);
+            mon.setDate(now.getDate()-(dow===0?6:dow-1)+offset*7); mon.setHours(0,0,0,0);
+            return Array.from({length:7},(_,i)=>{const d=new Date(mon);d.setDate(mon.getDate()+i);return d;});
         }
-        function dateKey(d) { return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; }
-        function fmt1(n) { return Math.round(n * 10) / 10; }
-        function fmtD(d) { return `${d.getDate().toString().padStart(2, '0')}.${(d.getMonth() + 1).toString().padStart(2, '0')}`; }
-        function getDayTotals(key) {
-            const day = state.data[key] || {}; let k = 0, b = 0, j = 0, u = 0;
-            for (const m of MEALS) for (const e of (day[m] || [])) { k += e.k; b += e.b; j += e.j; u += e.u; }
-            return { k: Math.round(k), b: fmt1(b), j: fmt1(j), u: fmt1(u) };
+        function dateKey(d){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
+        function fmt1(n){return Math.round(n*10)/10;}
+        function fmtD(d){return `${d.getDate().toString().padStart(2,'0')}.${(d.getMonth()+1).toString().padStart(2,'0')}`;}
+        function getDayTotals(key){
+            const day=state.data[key]||{};let k=0,b=0,j=0,u=0;
+            for(const m of MEALS)for(const e of(day[m]||[])){k+=e.k;b+=e.b;j+=e.j;u+=e.u;}
+            return{k:Math.round(k),b:fmt1(b),j:fmt1(j),u:fmt1(u)};
         }
 
-        function renderSidebar() {
-            const days = getWeekDates(state.weekOffset);
-            const wt = state.weekOffset === 0 ? 'эта неделя' : state.weekOffset === -1 ? 'прошлая' : `${state.weekOffset > 0 ? '+' : ''}${state.weekOffset}н`;
-            document.getElementById('weekRange').textContent = `${fmtD(days[0])} – ${fmtD(days[6])}`;
-            document.getElementById('weekTitle').textContent = wt;
-            const today = dateKey(new Date());
-            let wk = 0, wb = 0, wj = 0, wu = 0, html = '';
-            for (const d of days) {
-                const key = dateKey(d), t = getDayTotals(key);
-                wk += t.k; wb += t.b; wj += t.j; wu += t.u;
-                const isA = state.activeDay === key, isEmpty = t.k === 0, isT = today === key;
-                html += `<div class="day-item${isA ? ' active' : ''}${isEmpty ? ' empty' : ''}" onclick="setDay('${key}')">
-      <div><div class="dname">${DAYS_RU[d.getDay()]}${isT ? '<span class="today-pill">сег</span>' : ''}</div><div class="ddate">${fmtD(d)}</div></div>
-      <div class="dcal">${isEmpty ? '—' : t.k + ' ккал'}</div></div>`;
+        function renderSidebar(){
+            const days=getWeekDates(state.weekOffset);
+            const wt=state.weekOffset===0?'эта неделя':state.weekOffset===-1?'прошлая':`${state.weekOffset>0?'+':''}${state.weekOffset}н`;
+            document.getElementById('weekRange').textContent=`${fmtD(days[0])} – ${fmtD(days[6])}`;
+            document.getElementById('weekTitle').textContent=wt;
+            const today=dateKey(new Date());
+            let wk=0,wb=0,wj=0,wu=0,html='';
+            for(const d of days){
+                const key=dateKey(d),t=getDayTotals(key);
+                wk+=t.k;wb+=t.b;wj+=t.j;wu+=t.u;
+                const isA=state.activeDay===key,isEmpty=t.k===0,isT=today===key;
+                html+=`<div class="day-item${isA?' active':''}${isEmpty?' empty':''}" onclick="setDay('${key}')">
+                    <div><div class="dname">${DAYS_RU[d.getDay()]}${isT?'<span class="today-pill">сег</span>':''}</div><div class="ddate">${fmtD(d)}</div></div>
+                    <div class="dcal">${isEmpty?'—':t.k+' ккал'}</div></div>`;
             }
-            document.getElementById('daysList').innerHTML = html;
-            document.getElementById('wt-k').textContent = Math.round(wk);
-            document.getElementById('wt-b').textContent = fmt1(wb);
-            document.getElementById('wt-j').textContent = fmt1(wj);
-            document.getElementById('wt-u').textContent = fmt1(wu);
-            const sel = document.getElementById('mobDaySel');
-            sel.innerHTML = days.map(d => {
-                const key = dateKey(d), t = getDayTotals(key), isT = today === key;
-                return `<option value="${key}"${state.activeDay === key ? ' selected' : ''}>${DAYS_RU[d.getDay()]} ${fmtD(d)}${isT ? ' ★' : ''}${t.k > 0 ? ' · ' + t.k + ' ккал' : ''}</option>`;
+            document.getElementById('daysList').innerHTML=html;
+            document.getElementById('wt-k').textContent=Math.round(wk);
+            document.getElementById('wt-b').textContent=fmt1(wb);
+            document.getElementById('wt-j').textContent=fmt1(wj);
+            document.getElementById('wt-u').textContent=fmt1(wu);
+            const sel=document.getElementById('mobDaySel');
+            sel.innerHTML=days.map(d=>{
+                const key=dateKey(d),t=getDayTotals(key),isT=today===key;
+                return`<option value="${key}"${state.activeDay===key?' selected':''}>${DAYS_RU[d.getDay()]} ${fmtD(d)}${isT?' ★':''}${t.k>0?' · '+t.k+' ккал':''}</option>`;
             }).join('');
         }
 
-        function renderMain() {
-            const key = state.activeDay;
-            if (!key) { document.getElementById('mainContent').innerHTML = '<div style="padding:60px 0;text-align:center;color:var(--text3);">Выбери день</div>'; return; }
-            const d = new Date(key + 'T00:00:00'), t = getDayTotals(key), dayData = state.data[key] || {};
-            let mealsHtml = '';
-            for (const meal of MEALS) {
-                const entries = dayData[meal] || []; let mk = 0, mb = 0, mj = 0, mu = 0, rows = '';
-                for (const e of entries) {
-                    mk += e.k; mb += e.b; mj += e.j; mu += e.u;
-                    rows += `<div class="food-row">
-        <span class="food-name">${e.name}</span>
-        ${e.amount ? `<span class="food-amount">${e.amount}г</span>` : ''}
-        <div class="food-badges">
-          <span class="badge k">${Math.round(e.k)}</span>
-          <span class="badge b">Б${fmt1(e.b)}</span>
-          <span class="badge j">Ж${fmt1(e.j)}</span>
-          <span class="badge u">У${fmt1(e.u)}</span>
-        </div>
-        <button class="edit-btn" onclick="openEditPanel('${key}','${meal}',${e.id})" title="Редактировать">✎</button>
-        <button class="del-btn" onclick="askDelete('${key}','${meal}',${e.id},'${e.name.replace(/'/g, "\\'")}')">×</button>
-      </div>`;
+        function renderMain(){
+            const key=state.activeDay;
+            if(!key){document.getElementById('mainContent').innerHTML='<div style="padding:60px 0;text-align:center;color:var(--text3);">Выбери день</div>';return;}
+            const d=new Date(key+'T00:00:00'),t=getDayTotals(key),dayData=state.data[key]||{};
+            let mealsHtml='';
+            for(const meal of MEALS){
+                const entries=dayData[meal]||[];let mk=0,mb=0,mj=0,mu=0,rows='';
+                for(const e of entries){
+                    mk+=e.k;mb+=e.b;mj+=e.j;mu+=e.u;
+                    rows+=`<div class="food-row">
+                        <span class="food-name">${e.name}</span>
+                        ${e.amount?`<span class="food-amount">${e.amount}г</span>`:''}
+                        <div class="food-badges">
+                            <span class="badge k">${Math.round(e.k)}</span>
+                            <span class="badge b">Б${fmt1(e.b)}</span>
+                            <span class="badge j">Ж${fmt1(e.j)}</span>
+                            <span class="badge u">У${fmt1(e.u)}</span>
+                        </div>
+                        <button class="edit-btn" onclick="openEditPanel('${key}','${meal}',${e.id})" title="Редактировать">✎</button>
+                        <button class="del-btn" onclick="askDelete('${key}','${meal}',${e.id},'${e.name.replace(/'/g,"\\'")}')">×</button>
+                    </div>`;
                 }
-                mealsHtml += `<div class="meal-section">
-      <div class="meal-header"><span class="meal-name">${meal}</span>${mk > 0 ? `<span class="meal-kcal">${Math.round(mk)} ккал</span>` : ''}</div>
-      <div class="food-list">${rows}</div>
-      <div class="add-to-meal">
-        <button onclick="openPanel('${key}','${meal}')">+ вручную</button>
-        <button onclick="openSearch('${key}','${meal}')">поиск по базе</button>
-      </div></div>`;
+                mealsHtml+=`<div class="meal-section">
+                    <div class="meal-header"><span class="meal-name">${meal}</span>${mk>0?`<span class="meal-kcal">${Math.round(mk)} ккал</span>`:''}</div>
+                    <div class="food-list">${rows}</div>
+                    <div class="add-to-meal">
+                        <button onclick="openPanel('${key}','${meal}')">+ вручную</button>
+                        <button onclick="openSearch('${key}','${meal}')">поиск по базе</button>
+                    </div></div>`;
             }
-            document.getElementById('mainContent').innerHTML = `
-    <div class="day-header"><h1>${DAYS_RU[d.getDay()]}</h1><span class="dh-date">${fmtD(d)}.${d.getFullYear()}</span></div>
-    ${t.k > 0 ? `<div class="day-totals-bar">
-      <div class="dt-card k"><div class="dt-val">${t.k}</div><div class="dt-key">ккал</div></div>
-      <div class="dt-card b"><div class="dt-val">${t.b}</div><div class="dt-key">белки г</div></div>
-      <div class="dt-card j"><div class="dt-val">${t.j}</div><div class="dt-key">жиры г</div></div>
-      <div class="dt-card u"><div class="dt-val">${t.u}</div><div class="dt-key">углев г</div></div>
-    </div>`: ''}${mealsHtml}`;
+            document.getElementById('mainContent').innerHTML=`
+                <div class="day-header"><h1>${DAYS_RU[d.getDay()]}</h1><span class="dh-date">${fmtD(d)}.${d.getFullYear()}</span></div>
+                ${t.k>0?`<div class="day-totals-bar">
+                    <div class="dt-card k"><div class="dt-val">${t.k}</div><div class="dt-key">ккал</div></div>
+                    <div class="dt-card b"><div class="dt-val">${t.b}</div><div class="dt-key">белки г</div></div>
+                    <div class="dt-card j"><div class="dt-val">${t.j}</div><div class="dt-key">жиры г</div></div>
+                    <div class="dt-card u"><div class="dt-val">${t.u}</div><div class="dt-key">углев г</div></div>
+                </div>`:''}${mealsHtml}`;
         }
 
-        function render() { renderSidebar(); renderMain(); }
-        function setDay(key) { state.activeDay = key; render(); }
+        function render(){renderSidebar();renderMain();}
+        function setDay(key){state.activeDay=key;render();}
 
-        function recalc() {
-            const g = parseFloat(document.getElementById('inp-amount').value);
-            const k100 = parseFloat(document.getElementById('inp-k').value);
-            if (g > 0 && k100 > 0) {
-                const m = g / 100;
-                const k = Math.round(k100 * m);
-                document.getElementById('recalc-preview').textContent = `→ ${k} ккал`;
-            } else {
-                document.getElementById('recalc-preview').textContent = '';
-            }
+        function recalc(){
+            const g=parseFloat(document.getElementById('inp-amount').value);
+            const k100=parseFloat(document.getElementById('inp-k').value);
+            document.getElementById('recalc-preview').textContent=(g>0&&k100>0)?`→ ${Math.round(k100*g/100)} ккал`:'';
         }
 
-        let panelDay = null, panelMeal = null;
-        function openPanel(day, meal) {
-            panelDay = day; panelMeal = meal; editId = null;
-            document.getElementById('panelMealLabel').textContent = meal;
-            document.getElementById('btn-add-label').textContent = 'Добавить';
+        let panelDay=null,panelMeal=null;
+        function openPanel(day,meal){
+            panelDay=day;panelMeal=meal;editId=null;
+            document.getElementById('panelMealLabel').textContent=meal;
+            document.getElementById('btn-add-label').textContent='Добавить';
             document.getElementById('addPanel').classList.add('open');
-            document.getElementById('recalc-preview').textContent = '';
-            setTimeout(() => document.getElementById('inp-name').focus(), 50);
+            document.getElementById('recalc-preview').textContent='';
+            setTimeout(()=>document.getElementById('inp-name').focus(),50);
         }
-        function closePanel() {
+        function closePanel(){
             document.getElementById('addPanel').classList.remove('open');
-            ['inp-name', 'inp-amount', 'inp-k', 'inp-b', 'inp-j', 'inp-u'].forEach(id => document.getElementById(id).value = '');
-            document.getElementById('recalc-preview').textContent = '';
-            document.getElementById('btn-add-label').textContent = 'Добавить';
-            editId = null;
+            ['inp-name','inp-amount','inp-k','inp-b','inp-j','inp-u'].forEach(id=>document.getElementById(id).value='');
+            document.getElementById('recalc-preview').textContent='';
+            document.getElementById('btn-add-label').textContent='Добавить';
+            editId=null;
         }
-        function submitEntry() {
-            const name = document.getElementById('inp-name').value.trim();
-            if (!name || !panelDay || !panelMeal) return;
-            const g = parseFloat(document.getElementById('inp-amount').value) || 100;
-            const m = g / 100;
-            const k100 = parseFloat(document.getElementById('inp-k').value) || 0;
-            const b100 = parseFloat(document.getElementById('inp-b').value) || 0;
-            const j100 = parseFloat(document.getElementById('inp-j').value) || 0;
-            const u100 = parseFloat(document.getElementById('inp-u').value) || 0;
-            const entry = {
-                id: editId || Date.now(), name,
-                amount: g,
-                k: Math.round(k100 * m),
-                b: fmt1(b100 * m),
-                j: fmt1(j100 * m),
-                u: fmt1(u100 * m)
+        function submitEntry(){
+            const name=document.getElementById('inp-name').value.trim();
+            if(!name||!panelDay||!panelMeal)return;
+            const g=parseFloat(document.getElementById('inp-amount').value)||100,m=g/100;
+            const entry={
+                id:editId||Date.now(),name,amount:g,
+                k:Math.round((parseFloat(document.getElementById('inp-k').value)||0)*m),
+                b:fmt1((parseFloat(document.getElementById('inp-b').value)||0)*m),
+                j:fmt1((parseFloat(document.getElementById('inp-j').value)||0)*m),
+                u:fmt1((parseFloat(document.getElementById('inp-u').value)||0)*m)
             };
-            if (!state.data[panelDay]) state.data[panelDay] = {};
-            if (!state.data[panelDay][panelMeal]) state.data[panelDay][panelMeal] = [];
-            if (editId) {
-                state.data[panelDay][panelMeal] = state.data[panelDay][panelMeal].map(e => e.id === editId ? entry : e);
-            } else {
-                state.data[panelDay][panelMeal].push(entry);
-            }
-            saveData(); closePanel(); render();
+            if(!state.data[panelDay])state.data[panelDay]={};
+            if(!state.data[panelDay][panelMeal])state.data[panelDay][panelMeal]=[];
+            if(editId){state.data[panelDay][panelMeal]=state.data[panelDay][panelMeal].map(e=>e.id===editId?entry:e);}
+            else{state.data[panelDay][panelMeal].push(entry);}
+            saveData();closePanel();render();
         }
-        document.getElementById('inp-u').addEventListener('keydown', e => { if (e.key === 'Enter') submitEntry(); });
+        document.getElementById('inp-u').addEventListener('keydown',e=>{if(e.key==='Enter')submitEntry();});
 
-        let searchDay = null, searchMeal = null;
-        function openSearch(day, meal) {
-            searchDay = day; searchMeal = meal;
+        let searchDay=null,searchMeal=null;
+        function openSearch(day,meal){
+            searchDay=day;searchMeal=meal;
             document.getElementById('searchOverlay').classList.add('open');
-            document.getElementById('searchInput').value = '';
+            document.getElementById('searchInput').value='';
             filterSearch('');
-            setTimeout(() => document.getElementById('searchInput').focus(), 50);
+            setTimeout(()=>document.getElementById('searchInput').focus(),50);
         }
-        function closeSearch(e) { if (e.target === document.getElementById('searchOverlay')) document.getElementById('searchOverlay').classList.remove('open'); }
-        function filterSearch(q) {
-            const res = q.length < 1 ? DB : DB.filter(p => p.n.toLowerCase().includes(q.toLowerCase()));
-            document.getElementById('searchResults').innerHTML = res.length
-                ? res.map(p => `<div class="search-result" onclick="addFromDB(${JSON.stringify(p).replace(/"/g, '&quot;')})">
-        <span class="sr-name">${p.n}</span><span class="sr-kcal">${p.k} ккал</span>
-        <span class="badge b">Б${p.b}</span><span class="badge j">Ж${p.j}</span><span class="badge u">У${p.u}</span>
-      </div>`).join('')
-                : '<div class="search-empty">Ничего не найдено</div>';
+        function closeSearch(e){if(e.target===document.getElementById('searchOverlay'))document.getElementById('searchOverlay').classList.remove('open');}
+        function filterSearch(q){
+            const res=q.length<1?DB:DB.filter(p=>p.n.toLowerCase().includes(q.toLowerCase()));
+            document.getElementById('searchResults').innerHTML=res.length
+                ?res.map(p=>`<div class="search-result" onclick="addFromDB(${JSON.stringify(p).replace(/"/g,'&quot;')})">
+                    <span class="sr-name">${p.n}</span><span class="sr-kcal">${p.k} ккал</span>
+                    <span class="badge b">Б${p.b}</span><span class="badge j">Ж${p.j}</span><span class="badge u">У${p.u}</span>
+                </div>`).join('')
+                :'<div class="search-empty">Ничего не найдено</div>';
         }
-        function addFromDB(p) {
-            const amount = prompt(`Граммы для "${p.n}":`, '100');
-            if (amount === null) return;
-            const g = parseFloat(amount) || 100, m = g / 100;
-            const entry = { id: Date.now(), name: p.n, amount: g, k: Math.round(p.k * m), b: fmt1(p.b * m), j: fmt1(p.j * m), u: fmt1(p.u * m) };
-            if (!state.data[searchDay]) state.data[searchDay] = {};
-            if (!state.data[searchDay][searchMeal]) state.data[searchDay][searchMeal] = [];
+        function addFromDB(p){
+            const amount=prompt(`Граммы для "${p.n}":`, '100');
+            if(amount===null)return;
+            const g=parseFloat(amount)||100,m=g/100;
+            const entry={id:Date.now(),name:p.n,amount:g,k:Math.round(p.k*m),b:fmt1(p.b*m),j:fmt1(p.j*m),u:fmt1(p.u*m)};
+            if(!state.data[searchDay])state.data[searchDay]={};
+            if(!state.data[searchDay][searchMeal])state.data[searchDay][searchMeal]=[];
             state.data[searchDay][searchMeal].push(entry);
-            saveData(); document.getElementById('searchOverlay').classList.remove('open'); render();
+            saveData();document.getElementById('searchOverlay').classList.remove('open');render();
         }
 
-        // CONFIRM DELETE
-        let pendingDelete = null;
-        function askDelete(day, meal, id, name) {
-            pendingDelete = { day, meal, id };
-            document.getElementById('confirmName').textContent = name;
+        let pendingDelete=null;
+        function askDelete(day,meal,id,name){
+            pendingDelete={day,meal,id};
+            document.getElementById('confirmName').textContent=name;
             document.getElementById('confirmOverlay').classList.add('open');
         }
-        function closeConfirm() {
-            pendingDelete = null;
-            document.getElementById('confirmOverlay').classList.remove('open');
-        }
-        function confirmDelete() {
-            if (!pendingDelete) return;
-            const { day, meal, id } = pendingDelete;
-            state.data[day][meal] = state.data[day][meal].filter(e => e.id !== id);
-            if (!state.data[day][meal].length) delete state.data[day][meal];
-            if (!Object.keys(state.data[day]).length) delete state.data[day];
-            saveData(); closeConfirm(); render();
+        function closeConfirm(){pendingDelete=null;document.getElementById('confirmOverlay').classList.remove('open');}
+        function confirmDelete(){
+            if(!pendingDelete)return;
+            const{day,meal,id}=pendingDelete;
+            state.data[day][meal]=state.data[day][meal].filter(e=>e.id!==id);
+            if(!state.data[day][meal].length)delete state.data[day][meal];
+            if(!Object.keys(state.data[day]).length)delete state.data[day];
+            saveData();closeConfirm();render();
         }
 
-        // EDIT
-        let editId = null;
-        function openEditPanel(day, meal, id) {
-            const entry = state.data[day]?.[meal]?.find(e => e.id === id);
-            if (!entry) return;
-            // Reopen add panel pre-filled with per-100g values
-            panelDay = day; panelMeal = meal; editId = id;
-            document.getElementById('panelMealLabel').textContent = meal + ' · редактирование';
-            document.getElementById('inp-name').value = entry.name;
-            // Store original per-100g: we saved computed values, so reverse if amount known
-            const g = entry.amount || 100;
-            const m = g / 100;
-            document.getElementById('inp-amount').value = g;
-            document.getElementById('inp-k').value = m ? fmt1(entry.k / m) : entry.k;
-            document.getElementById('inp-b').value = m ? fmt1(entry.b / m) : entry.b;
-            document.getElementById('inp-j').value = m ? fmt1(entry.j / m) : entry.j;
-            document.getElementById('inp-u').value = m ? fmt1(entry.u / m) : entry.u;
-            document.getElementById('btn-add-label').textContent = 'Сохранить';
+        let editId=null;
+        function openEditPanel(day,meal,id){
+            const entry=state.data[day]?.[meal]?.find(e=>e.id===id);
+            if(!entry)return;
+            panelDay=day;panelMeal=meal;editId=id;
+            document.getElementById('panelMealLabel').textContent=meal+' · редактирование';
+            document.getElementById('inp-name').value=entry.name;
+            const g=entry.amount||100,m=g/100;
+            document.getElementById('inp-amount').value=g;
+            document.getElementById('inp-k').value=m?fmt1(entry.k/m):entry.k;
+            document.getElementById('inp-b').value=m?fmt1(entry.b/m):entry.b;
+            document.getElementById('inp-j').value=m?fmt1(entry.j/m):entry.j;
+            document.getElementById('inp-u').value=m?fmt1(entry.u/m):entry.u;
+            document.getElementById('btn-add-label').textContent='Сохранить';
             recalc();
             document.getElementById('addPanel').classList.add('open');
-            setTimeout(() => document.getElementById('inp-name').focus(), 50);
+            setTimeout(()=>document.getElementById('inp-name').focus(),50);
         }
 
-        function deleteEntry(day, meal, id) {
-            state.data[day][meal] = state.data[day][meal].filter(e => e.id !== id);
-            if (!state.data[day][meal].length) delete state.data[day][meal];
-            if (!Object.keys(state.data[day]).length) delete state.data[day];
-            saveData(); render();
-        }
+        document.getElementById('prevWeek').onclick=()=>{state.weekOffset--;render();};
+        document.getElementById('nextWeek').onclick=()=>{state.weekOffset++;render();};
+        document.getElementById('mobPrev').onclick=()=>{state.weekOffset--;render();};
+        document.getElementById('mobNext').onclick=()=>{state.weekOffset++;render();};
 
-        document.getElementById('prevWeek').onclick = () => { state.weekOffset--; render(); };
-        document.getElementById('nextWeek').onclick = () => { state.weekOffset++; render(); };
-        document.getElementById('mobPrev').onclick = () => { state.weekOffset--; render(); };
-        document.getElementById('mobNext').onclick = () => { state.weekOffset++; render(); };
-
-        function exportJSON() {
-            const weeks = {};
-            for (const key of Object.keys(state.data)) {
-                const d = new Date(key + 'T00:00:00'), dow = d.getDay(), mon = new Date(d);
-                mon.setDate(d.getDate() - (dow === 0 ? 6 : dow - 1));
-                const wk = dateKey(mon); if (!weeks[wk]) weeks[wk] = {}; weeks[wk][key] = state.data[key];
+        function exportJSON(){
+            const weeks={};
+            for(const key of Object.keys(state.data)){
+                const d=new Date(key+'T00:00:00'),dow=d.getDay(),mon=new Date(d);
+                mon.setDate(d.getDate()-(dow===0?6:dow-1));
+                const wk=dateKey(mon);if(!weeks[wk])weeks[wk]={};weeks[wk][key]=state.data[key];
             }
-            const out = { exported_at: new Date().toISOString(), note: "КБЖУ трекер. k=ккал b=белки j=жиры u=углеводы (граммы)", weeks: {} };
-            for (const [ws, days] of Object.entries(weeks)) {
-                const wd = new Date(ws + 'T00:00:00'), we = new Date(wd); we.setDate(wd.getDate() + 6);
-                const wLabel = `${fmtD(wd)} – ${fmtD(we)}.${we.getFullYear()}`;
-                out.weeks[wLabel] = {};
-                for (const [dk, meals] of Object.entries(days)) {
-                    const dd = new Date(dk + 'T00:00:00'), t = getDayTotals(dk);
-                    const dayLabel = `${DAYS_RU[dd.getDay()]} ${fmtD(dd)}`;
-                    out.weeks[wLabel][dayLabel] = { итого: { ккал: t.k, белки: t.b, жиры: t.j, углеводы: t.u }, приёмы: {} };
-                    for (const meal of MEALS) {
-                        const entries = meals[meal]; if (!entries?.length) continue;
-                        let mk = 0, mb = 0, mj = 0, mu = 0;
-                        const products = entries.map(e => {
-                            mk += e.k; mb += e.b; mj += e.j; mu += e.u;
-                            return { название: e.name, ...(e.amount ? { граммы: e.amount } : {}), ккал: Math.round(e.k), белки: fmt1(e.b), жиры: fmt1(e.j), углеводы: fmt1(e.u) };
-                        });
-                        out.weeks[wLabel][dayLabel].приёмы[meal] = { итого: { ккал: Math.round(mk), белки: fmt1(mb), жиры: fmt1(mj), углеводы: fmt1(mu) }, продукты: products };
+            const out={exported_at:new Date().toISOString(),note:"КБЖУ трекер",weeks:{}};
+            for(const[ws,days]of Object.entries(weeks)){
+                const wd=new Date(ws+'T00:00:00'),we=new Date(wd);we.setDate(wd.getDate()+6);
+                const wLabel=`${fmtD(wd)} – ${fmtD(we)}.${we.getFullYear()}`;
+                out.weeks[wLabel]={};
+                for(const[dk,meals]of Object.entries(days)){
+                    const dd=new Date(dk+'T00:00:00'),t=getDayTotals(dk);
+                    const dayLabel=`${DAYS_RU[dd.getDay()]} ${fmtD(dd)}`;
+                    out.weeks[wLabel][dayLabel]={итого:{ккал:t.k,белки:t.b,жиры:t.j,углеводы:t.u},приёмы:{}};
+                    for(const meal of MEALS){
+                        const entries=meals[meal];if(!entries?.length)continue;
+                        let mk=0,mb=0,mj=0,mu=0;
+                        const products=entries.map(e=>{mk+=e.k;mb+=e.b;mj+=e.j;mu+=e.u;return{название:e.name,...(e.amount?{граммы:e.amount}:{}),ккал:Math.round(e.k),белки:fmt1(e.b),жиры:fmt1(e.j),углеводы:fmt1(e.u)};});
+                        out.weeks[wLabel][dayLabel].приёмы[meal]={итого:{ккал:Math.round(mk),белки:fmt1(mb),жиры:fmt1(mj),углеводы:fmt1(mu)},продукты:products};
                     }
                 }
             }
-            const a = document.createElement('a');
-            a.href = URL.createObjectURL(new Blob([JSON.stringify(out, null, 2)], { type: 'application/json' }));
-            a.download = `kbju_${dateKey(new Date())}.json`; a.click();
+            const a=document.createElement('a');
+            a.href=URL.createObjectURL(new Blob([JSON.stringify(out,null,2)],{type:'application/json'}));
+            a.download=`kbju_${dateKey(new Date())}.json`;a.click();
         }
 
-        function backupData() {
-            const backup = { __backup: true, exported_at: new Date().toISOString(), data: state.data };
-            const a = document.createElement('a');
-            a.href = URL.createObjectURL(new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' }));
-            a.download = 'kbju_backup_' + dateKey(new Date()) + '.json'; a.click();
+        function backupData(){
+            const a=document.createElement('a');
+            a.href=URL.createObjectURL(new Blob([JSON.stringify({__backup:true,exported_at:new Date().toISOString(),data:state.data},null,2)],{type:'application/json'}));
+            a.download='kbju_backup_'+dateKey(new Date())+'.json';a.click();
         }
 
-        function importJSON(event) {
-            const file = event.target.files[0]; if (!file) return;
-            const reader = new FileReader();
-            reader.onload = e => {
-                try {
-                    const raw = JSON.parse(e.target.result);
-                    if (raw.__backup && raw.data) {
-                        const count = Object.keys(raw.data).length;
-                        if (confirm('Загрузить бэкап? Найдено записей за ' + count + ' дн. Данные объединятся с текущими.')) {
-                            state.data = Object.assign({}, state.data, raw.data);
-                            saveData(); render();
-                            alert('✅ Готово! Загружено ' + count + ' дн. данных.');
+        function importJSON(event){
+            const file=event.target.files[0];if(!file)return;
+            const reader=new FileReader();
+            reader.onload=e=>{
+                try{
+                    const raw=JSON.parse(e.target.result);
+                    if(raw.__backup&&raw.data){
+                        const count=Object.keys(raw.data).length;
+                        if(confirm('Загрузить бэкап? Найдено записей за '+count+' дн. Данные объединятся с текущими.')){
+                            state.data=Object.assign({},state.data,raw.data);
+                            saveData();render();alert('✅ Загружено '+count+' дн. данных.');
                         }
-                    } else if (raw.weeks) {
-                        alert('Это отчёт для ИИ, не бэкап.\nДля переноса данных используй кнопку 💾 (бэкап).');
-                    } else {
-                        const count = Object.keys(raw).length;
-                        if (confirm('Импортировать ' + count + ' дн. данных и объединить с текущими?')) {
-                            state.data = Object.assign({}, state.data, raw); saveData(); render(); alert('✅ Готово!');
+                    }else if(raw.weeks){
+                        alert('Это отчёт для ИИ, не бэкап.\nИспользуй кнопку 💾 для бэкапа.');
+                    }else{
+                        const count=Object.keys(raw).length;
+                        if(confirm('Импортировать '+count+' дн. данных?')){
+                            state.data=Object.assign({},state.data,raw);saveData();render();alert('✅ Готово!');
                         }
                     }
-                } catch { alert('Ошибка: невалидный JSON'); }
-                event.target.value = '';
+                }catch{alert('Ошибка: невалидный JSON');}
+                event.target.value='';
             };
             reader.readAsText(file);
         }
-
-        loadData();
-        state.activeDay = dateKey(new Date());
-        render();
     </script>
 </body>
-
 </html>
