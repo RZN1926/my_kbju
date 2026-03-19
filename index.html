@@ -366,6 +366,9 @@
                 const av = document.getElementById('userAvatar');
                 av.src = user.photoURL || '';
                 av.style.display = user.photoURL ? 'block' : 'none';
+                // Рендерим сразу — не ждём Firestore, чтобы даты были видны моментально
+                state.activeDay = dateKey(new Date());
+                render();
                 subscribeToData();
             } else {
                 if (unsubSnap) { unsubSnap(); unsubSnap = null; }
@@ -381,11 +384,18 @@
 
         function subscribeToData() {
             if (unsubSnap) unsubSnap();
-            unsubSnap = userDoc().onSnapshot(snap => {
-                state.data = snap.exists ? (snap.data().data || {}) : {};
-                if (!state.activeDay) state.activeDay = dateKey(new Date());
-                render();
-            });
+            unsubSnap = userDoc().onSnapshot(
+                snap => {
+                    state.data = snap.exists ? (snap.data().data || {}) : {};
+                    if (!state.activeDay) state.activeDay = dateKey(new Date());
+                    render();
+                },
+                err => {
+                    console.error('Firestore error:', err);
+                    if (!state.activeDay) state.activeDay = dateKey(new Date());
+                    render();
+                }
+            );
         }
 
         function saveData() {
@@ -404,16 +414,16 @@
         const DAYS_RU = ['Воскресенье','Понедельник','Вторник','Среда','Четверг','Пятница','Суббота'];
         const MEALS   = ['Завтрак','Обед','Перекус','Предтрен','Ужин','Перед сном'];
         const DB = [
-            {n:'Куриная грудь (варёная)', k:140, b:29,   j:2,   u:0.1},
-            {n:'Творог 5%',               k:121, b:16.8, j:5,   u:1.9},
-            {n:'Гречка варёная',          k:350, b:12.8, j:2.7, u:61 },
-            {n:'Овсянка на воде',         k:350, b:12,   j:1.5, u:15 },
-            {n:'Яйцо куриное (1 шт)',     k:143, b:13,   j:11,  u:0.7},
-            {n:'Рис варёный',             k:360, b:6.7,  j:0.6, u:80 },
-            {n:'Банан',                   k:92,  b:1.1,  j:0.4, u:22 },
-            {n:'Кефир 1%',                k:30,  b:3,    j:1,   u:3.8},
-            {n:'Курица Копч.',            k:113, b:23.6, j:1.9, u:0.4},
-            {n:'Арахис',                  k:620, b:26,   j:50,  u:14 },
+            {n:'Куриная грудь (варёная)',k:140,b:29,  j:2,  u:0.1},
+            {n:'Творог 5%',             k:121,b:16.8,j:5,  u:1.9},
+            {n:'Гречка варёная',        k:350,b:12.8,j:2.7,u:61 },
+            {n:'Овсянка на воде',       k:350,b:12,  j:1.5,u:15 },
+            {n:'Яйцо куриное (1 шт)',   k:143,b:13,  j:11, u:0.7},
+            {n:'Рис варёный',           k:360,b:6.7, j:0.6,u:80 },
+            {n:'Банан',                 k:92, b:1.1, j:0.4,u:22 },
+            {n:'Кефир 1%',              k:30, b:3,   j:1,  u:3.8},
+            {n:'Курица Копч.',          k:113,b:23.6,j:1.9,u:0.4},
+            {n:'Арахис',               k:620,b:26,  j:50, u:14 },
         ];
 
         let state = { weekOffset:0, activeDay:null, data:{} };
