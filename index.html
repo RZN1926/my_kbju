@@ -73,6 +73,8 @@
         .user-name{flex:1;font-size:12px;color:var(--text2);font-family:'IBM Plex Mono',monospace;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
         .btn-logout{background:none;border:none;color:var(--text3);cursor:pointer;font-size:11px;padding:3px 6px;border-radius:4px;transition:color .15s;font-family:'IBM Plex Mono',monospace;}
         .btn-logout:hover{color:var(--zhir);}
+        .btn-copy-uid{background:none;border:1px solid var(--border2);color:var(--text3);cursor:pointer;font-size:11px;padding:3px 7px;border-radius:4px;transition:all .15s;font-family:'IBM Plex Mono',monospace;white-space:nowrap;}
+        .btn-copy-uid:hover{border-color:var(--accent);color:var(--accent);}
 
         .logo-actions{display:flex;gap:7px;}
         .logo-btn{flex:1;background:var(--bg3);border:1px solid var(--border2);color:var(--text2);padding:9px 12px;border-radius:var(--radius);font-size:13px;font-family:'IBM Plex Mono',monospace;cursor:pointer;transition:all .15s;text-align:center;white-space:nowrap;}
@@ -245,6 +247,7 @@
                 <div class="user-row">
                     <img class="user-avatar" id="userAvatar" src="" alt="">
                     <span class="user-name" id="userName">—</span>
+                    <button class="btn-copy-uid" id="btnCopyUid" onclick="copyUid()" title="Скопировать UID для бота">uid</button>
                     <button class="btn-logout" onclick="doSignOut()">выйти</button>
                 </div>
                 <div class="logo-actions">
@@ -355,6 +358,16 @@
                 });
         };
 
+        function copyUid() {
+            if (!currentUser) return;
+            navigator.clipboard.writeText(currentUser.uid).then(() => {
+                const btn = document.getElementById('btnCopyUid');
+                btn.textContent = '✓ скопировано';
+                btn.style.color = 'var(--accent)';
+                btn.style.borderColor = 'var(--accent)';
+                setTimeout(() => { btn.textContent = 'uid'; btn.style.color = ''; btn.style.borderColor = ''; }, 2000);
+            });
+        }
         function doSignOut() {
             if (!confirm('Выйти из аккаунта?')) return;
             if (unsubSnap) unsubSnap();
