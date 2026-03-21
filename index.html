@@ -73,8 +73,6 @@
         .user-name{flex:1;font-size:12px;color:var(--text2);font-family:'IBM Plex Mono',monospace;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
         .btn-logout{background:none;border:none;color:var(--text3);cursor:pointer;font-size:11px;padding:3px 6px;border-radius:4px;transition:color .15s;font-family:'IBM Plex Mono',monospace;}
         .btn-logout:hover{color:var(--zhir);}
-        .btn-copy-uid{background:none;border:1px solid var(--border2);color:var(--text3);cursor:pointer;font-size:11px;padding:3px 7px;border-radius:4px;transition:all .15s;font-family:'IBM Plex Mono',monospace;white-space:nowrap;}
-        .btn-copy-uid:hover{border-color:var(--accent);color:var(--accent);}
 
         .logo-actions{display:flex;gap:7px;}
         .logo-btn{flex:1;background:var(--bg3);border:1px solid var(--border2);color:var(--text2);padding:9px 12px;border-radius:var(--radius);font-size:13px;font-family:'IBM Plex Mono',monospace;cursor:pointer;transition:all .15s;text-align:center;white-space:nowrap;}
@@ -188,6 +186,30 @@
         .mob-day-select{flex:1;min-width:0;background:var(--bg3);border:1px solid var(--border2);color:var(--text);padding:10px 8px;border-radius:var(--radius);font-size:14px;font-family:'IBM Plex Sans',sans-serif;outline:none;overflow:hidden;text-overflow:ellipsis;}
         .mob-week-btn{background:none;border:1px solid var(--border2);color:var(--text2);width:40px;height:40px;min-width:40px;border-radius:var(--radius);cursor:pointer;font-size:20px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s;}
         .mob-week-btn:hover{border-color:var(--accent);color:var(--accent);}
+        .mob-settings-btn{background:none;border:1px solid var(--border2);color:var(--text2);width:40px;height:40px;min-width:40px;border-radius:var(--radius);cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s;}
+        .mob-settings-btn:hover{border-color:var(--accent);color:var(--accent);}
+
+        /* MOBILE SETTINGS SHEET */
+        .mob-settings-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:400;display:none;align-items:flex-end;}
+        .mob-settings-overlay.open{display:flex;}
+        .mob-settings-sheet{background:var(--bg2);border-top:1px solid var(--border2);border-radius:18px 18px 0 0;width:100%;padding:0 0 env(safe-area-inset-bottom,16px);transform:translateY(100%);transition:transform .25s ease;}
+        .mob-settings-overlay.open .mob-settings-sheet{transform:translateY(0);}
+        .mob-sheet-handle{width:40px;height:4px;background:var(--border2);border-radius:2px;margin:12px auto 0;}
+        .mob-sheet-title{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;padding:16px 20px 10px;}
+        .mob-sheet-section{padding:0 16px 12px;}
+        .mob-sheet-divider{height:1px;background:var(--border);margin:4px 0;}
+        .mob-theme-row{display:flex;align-items:center;gap:12px;padding:12px 20px;}
+        .mob-theme-label{font-size:14px;color:var(--text2);flex:1;}
+        .mob-theme-btns{display:flex;gap:10px;}
+        .mob-theme-btns .theme-btn{width:28px;height:28px;}
+        .mob-user-row{display:flex;align-items:center;gap:10px;padding:12px 20px;}
+        .mob-user-avatar{width:32px;height:32px;border-radius:50%;background:var(--bg3);border:1px solid var(--border2);flex-shrink:0;object-fit:cover;}
+        .mob-user-name{flex:1;font-size:13px;color:var(--text2);font-family:'IBM Plex Mono',monospace;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+        .mob-action-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:8px 16px 16px;}
+        .mob-action-btn{background:var(--bg3);border:1px solid var(--border2);color:var(--text2);padding:12px 10px;border-radius:var(--radius);font-size:13px;font-family:'IBM Plex Mono',monospace;cursor:pointer;text-align:center;transition:all .15s;}
+        .mob-action-btn:hover,.mob-action-btn:active{border-color:var(--accent);color:var(--accent);}
+        .mob-action-btn.imp:hover,.mob-action-btn.imp:active{border-color:var(--ug);color:var(--ug);}
+        .mob-action-btn.danger:hover,.mob-action-btn.danger:active{border-color:var(--zhir);color:var(--zhir);}
 
         @media(max-width:720px){
             :root{--sidebar-w:0px;}
@@ -246,8 +268,10 @@
                 </div>
                 <div class="user-row">
                     <img class="user-avatar" id="userAvatar" src="" alt="">
-                    <span class="user-name" id="userName">—</span>
-                    <button class="btn-copy-uid" id="btnCopyUid" onclick="copyUid()" title="Скопировать UID для бота">uid</button>
+                    <div style="flex:1;min-width:0;">
+                        <div class="user-name" id="userName">—</div>
+                        <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text3);cursor:pointer;" id="sidebarUid" onclick="copyUid()">скопировать uid</div>
+                    </div>
                     <button class="btn-logout" onclick="doSignOut()">выйти</button>
                 </div>
                 <div class="logo-actions">
@@ -278,9 +302,41 @@
 
     <!-- MOBILE NAV -->
     <div class="mobile-nav">
-        <button class="mob-week-btn" id="mobPrev">‹</button>
+        <button class="mob-week-btn" id="mobPrev">&#x2039;</button>
         <select class="mob-day-select" id="mobDaySel" onchange="setDay(this.value)"></select>
-        <button class="mob-week-btn" id="mobNext">›</button>
+        <button class="mob-week-btn" id="mobNext">&#x203a;</button>
+        <button class="mob-settings-btn" onclick="openMobSettings()" title="Настройки">&#x2699;</button>
+    </div>
+
+    <!-- MOBILE SETTINGS SHEET -->
+    <div class="mob-settings-overlay" id="mobSettingsOverlay" onclick="closeMobSettingsOutside(event)">
+        <div class="mob-settings-sheet" id="mobSettingsSheet">
+            <div class="mob-sheet-handle"></div>
+            <div class="mob-sheet-title">Настройки</div>
+            <div class="mob-sheet-divider"></div>
+            <div class="mob-theme-row">
+                <span class="mob-theme-label">Тема</span>
+                <div class="mob-theme-btns">
+                    <button class="theme-btn" data-t="dark" onclick="setTheme('dark')" title="Тёмная"></button>
+                    <button class="theme-btn" data-t="light" onclick="setTheme('light')" title="Светлая"></button>
+                    <button class="theme-btn" data-t="bright" onclick="setTheme('bright')" title="Яркая"></button>
+                </div>
+            </div>
+            <div class="mob-sheet-divider"></div>
+            <div class="mob-user-row">
+                <img class="mob-user-avatar" id="mobUserAvatar" src="" alt="" style="display:none">
+                <div style="flex:1;min-width:0;">
+                    <div class="mob-user-name" id="mobUserName">—</div>
+                    <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text3);margin-top:2px;cursor:pointer;" id="mobUserUid" onclick="copyUid()">скопировать uid</div>
+                </div>
+            </div>
+            <div class="mob-action-grid">
+                <button class="mob-action-btn" onclick="exportJSON();closeMobSettings()">&#x2193; отчёт</button>
+                <button class="mob-action-btn" onclick="backupData();closeMobSettings()">&#x1F4BE; бэкап</button>
+                <button class="mob-action-btn imp" onclick="document.getElementById('importFile').click();closeMobSettings()">&#x2191; загрузить</button>
+                <button class="mob-action-btn danger" onclick="closeMobSettings();doSignOut()">&#x23FB; выйти</button>
+            </div>
+        </div>
     </div>
 
     <!-- ADD PANEL -->
@@ -358,16 +414,6 @@
                 });
         };
 
-        function copyUid() {
-            if (!currentUser) return;
-            navigator.clipboard.writeText(currentUser.uid).then(() => {
-                const btn = document.getElementById('btnCopyUid');
-                btn.textContent = '✓ скопировано';
-                btn.style.color = 'var(--accent)';
-                btn.style.borderColor = 'var(--accent)';
-                setTimeout(() => { btn.textContent = 'uid'; btn.style.color = ''; btn.style.borderColor = ''; }, 2000);
-            });
-        }
         function doSignOut() {
             if (!confirm('Выйти из аккаунта?')) return;
             if (unsubSnap) unsubSnap();
@@ -383,6 +429,10 @@
                 const av = document.getElementById('userAvatar');
                 av.src = user.photoURL || '';
                 av.style.display = user.photoURL ? 'block' : 'none';
+                // Мобильное меню
+                document.getElementById('mobUserName').textContent = user.displayName || user.email;
+                const mobAv = document.getElementById('mobUserAvatar');
+                if(user.photoURL){mobAv.src=user.photoURL;mobAv.style.display='block';}else{mobAv.style.display='none';}
                 // Рендерим сразу — не ждём Firestore, чтобы даты были видны моментально
                 state.activeDay = dateKey(new Date());
                 render();
@@ -645,6 +695,23 @@
         document.getElementById('nextWeek').onclick=()=>{state.weekOffset++;render();};
         document.getElementById('mobPrev').onclick=()=>{state.weekOffset--;render();};
         document.getElementById('mobNext').onclick=()=>{state.weekOffset++;render();};
+
+        function openMobSettings(){
+            document.getElementById('mobSettingsOverlay').classList.add('open');
+        }
+        function closeMobSettings(){
+            document.getElementById('mobSettingsOverlay').classList.remove('open');
+        }
+        function closeMobSettingsOutside(e){
+            if(e.target===document.getElementById('mobSettingsOverlay'))closeMobSettings();
+        }
+        function copyUid(){
+            if(!currentUser)return;
+            navigator.clipboard.writeText(currentUser.uid).then(()=>{
+                const els=[document.getElementById('mobUserUid'),document.getElementById('sidebarUid')];
+                els.forEach(el=>{if(el){el.textContent='✓ скопировано';setTimeout(()=>{el.textContent='скопировать uid';},1500);}});
+            }).catch(()=>{prompt('Скопируй UID:',currentUser.uid);});
+        }
 
         function exportJSON(){
             const weeks={};
