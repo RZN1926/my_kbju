@@ -708,7 +708,7 @@
         function createBotCode(){
             if(!currentUser)return;
             const code=String(Math.floor(100000+Math.random()*900000));
-            const expiresAt=new Date(Date.now()+10*60*1000);
+            const expiresAt=new Date(Date.now()+2*60*1000);
             userDoc().set({
                 bot_pairing:{
                     code,
@@ -719,7 +719,7 @@
                 navigator.clipboard.writeText(text).catch(()=>{});
                 const els=[document.getElementById('mobUserUid'),document.getElementById('sidebarUid')];
                 els.forEach(el=>{if(el){el.textContent='код: '+code;setTimeout(()=>{el.textContent='код для бота';},30000);}});
-                prompt('Отправь это боту в Telegram. Код действует 10 минут:',text);
+                prompt('Отправь это боту в Telegram. Код действует 2 минуты:',text);
             }).catch(e=>{
                 console.error(e);
                 alert('Не удалось создать код для бота');
