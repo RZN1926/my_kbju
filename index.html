@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>КБЖУ</title>
+    <title>Bizu</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
@@ -239,7 +239,7 @@
 <body>
     <!-- LOGIN -->
     <div class="login-screen" id="loginScreen">
-        <div class="login-logo">кбжу<span>.трекер</span></div>
+        <div class="login-logo">Bizu<span>.tracker</span></div>
         <div class="login-sub">Войди чтобы данные синхронизировались<br>между телефоном и компьютером</div>
         <button class="btn-google" id="btnGoogleLogin">
             <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -259,7 +259,7 @@
         <aside class="sidebar">
             <div class="logo">
                 <div class="logo-top">
-                    <div class="logo-title">кбжу<span>.трекер</span></div>
+                    <div class="logo-title">Bizu<span>.tracker</span></div>
                     <div class="theme-switcher">
                         <button class="theme-btn" data-t="dark" onclick="setTheme('dark')" title="Тёмная"></button>
                         <button class="theme-btn" data-t="light" onclick="setTheme('light')" title="Светлая"></button>
@@ -270,7 +270,7 @@
                     <img class="user-avatar" id="userAvatar" src="" alt="">
                     <div style="flex:1;min-width:0;">
                         <div class="user-name" id="userName">—</div>
-                        <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text3);cursor:pointer;" id="sidebarUid" onclick="copyUid()">скопировать uid</div>
+                        <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text3);cursor:pointer;" id="sidebarUid" onclick="createBotCode()">код для бота</div>
                     </div>
                     <button class="btn-logout" onclick="doSignOut()">выйти</button>
                 </div>
@@ -327,7 +327,7 @@
                 <img class="mob-user-avatar" id="mobUserAvatar" src="" alt="" style="display:none">
                 <div style="flex:1;min-width:0;">
                     <div class="mob-user-name" id="mobUserName">—</div>
-                    <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text3);margin-top:2px;cursor:pointer;" id="mobUserUid" onclick="copyUid()">скопировать uid</div>
+                    <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text3);margin-top:2px;cursor:pointer;" id="mobUserUid" onclick="createBotCode()">код для бота</div>
                 </div>
             </div>
             <div class="mob-action-grid">
@@ -705,12 +705,25 @@
         function closeMobSettingsOutside(e){
             if(e.target===document.getElementById('mobSettingsOverlay'))closeMobSettings();
         }
-        function copyUid(){
+        function createBotCode(){
             if(!currentUser)return;
-            navigator.clipboard.writeText(currentUser.uid).then(()=>{
+            const code=String(Math.floor(100000+Math.random()*900000));
+            const expiresAt=new Date(Date.now()+10*60*1000);
+            userDoc().set({
+                bot_pairing:{
+                    code,
+                    expires_at:firebase.firestore.Timestamp.fromDate(expiresAt)
+                }
+            },{merge:true}).then(()=>{
+                const text='/uid '+code;
+                navigator.clipboard.writeText(text).catch(()=>{});
                 const els=[document.getElementById('mobUserUid'),document.getElementById('sidebarUid')];
-                els.forEach(el=>{if(el){el.textContent='✓ скопировано';setTimeout(()=>{el.textContent='скопировать uid';},1500);}});
-            }).catch(()=>{prompt('Скопируй UID:',currentUser.uid);});
+                els.forEach(el=>{if(el){el.textContent='код: '+code;setTimeout(()=>{el.textContent='код для бота';},30000);}});
+                prompt('Отправь это боту в Telegram. Код действует 10 минут:',text);
+            }).catch(e=>{
+                console.error(e);
+                alert('Не удалось создать код для бота');
+            });
         }
 
         function exportJSON(){
@@ -720,7 +733,7 @@
                 mon.setDate(d.getDate()-(dow===0?6:dow-1));
                 const wk=dateKey(mon);if(!weeks[wk])weeks[wk]={};weeks[wk][key]=state.data[key];
             }
-            const out={exported_at:new Date().toISOString(),note:"КБЖУ трекер",weeks:{}};
+            const out={exported_at:new Date().toISOString(),note:"Bizu tracker",weeks:{}};
             for(const[ws,days]of Object.entries(weeks)){
                 const wd=new Date(ws+'T00:00:00'),we=new Date(wd);we.setDate(wd.getDate()+6);
                 const wLabel=`${fmtD(wd)} – ${fmtD(we)}.${we.getFullYear()}`;
@@ -739,13 +752,13 @@
             }
             const a=document.createElement('a');
             a.href=URL.createObjectURL(new Blob([JSON.stringify(out,null,2)],{type:'application/json'}));
-            a.download=`kbju_${dateKey(new Date())}.json`;a.click();
+            a.download=`bizu_${dateKey(new Date())}.json`;a.click();
         }
 
         function backupData(){
             const a=document.createElement('a');
             a.href=URL.createObjectURL(new Blob([JSON.stringify({__backup:true,exported_at:new Date().toISOString(),data:state.data},null,2)],{type:'application/json'}));
-            a.download='kbju_backup_'+dateKey(new Date())+'.json';a.click();
+            a.download='bizu_backup_'+dateKey(new Date())+'.json';a.click();
         }
 
         function importJSON(event){
