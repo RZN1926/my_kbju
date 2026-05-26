@@ -71,6 +71,8 @@
         .user-row{display:flex;align-items:center;gap:8px;margin-bottom:12px;}
         .user-avatar{width:26px;height:26px;border-radius:50%;background:var(--bg3);border:1px solid var(--border2);flex-shrink:0;object-fit:cover;}
         .user-name{flex:1;font-size:12px;color:var(--text2);font-family:'IBM Plex Mono',monospace;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+        .bot-code-link{display:inline-block;margin-top:2px;font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:500;line-height:1.35;color:var(--ug);text-transform:uppercase;letter-spacing:.08em;cursor:pointer;transition:color .15s,opacity .15s;}
+        .bot-code-link:hover{color:var(--accent);}
         .btn-logout{background:none;border:none;color:var(--text3);cursor:pointer;font-size:11px;padding:3px 6px;border-radius:4px;transition:color .15s;font-family:'IBM Plex Mono',monospace;}
         .btn-logout:hover{color:var(--zhir);}
 
@@ -205,6 +207,7 @@
         .mob-user-row{display:flex;align-items:center;gap:10px;padding:12px 20px;}
         .mob-user-avatar{width:32px;height:32px;border-radius:50%;background:var(--bg3);border:1px solid var(--border2);flex-shrink:0;object-fit:cover;}
         .mob-user-name{flex:1;font-size:13px;color:var(--text2);font-family:'IBM Plex Mono',monospace;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+        .mob-user-row .bot-code-link{font-size:11px;}
         .mob-action-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:8px 16px 16px;}
         .mob-action-btn{background:var(--bg3);border:1px solid var(--border2);color:var(--text2);padding:12px 10px;border-radius:var(--radius);font-size:13px;font-family:'IBM Plex Mono',monospace;cursor:pointer;text-align:center;transition:all .15s;}
         .mob-action-btn:hover,.mob-action-btn:active{border-color:var(--accent);color:var(--accent);}
@@ -270,7 +273,7 @@
                     <img class="user-avatar" id="userAvatar" src="" alt="">
                     <div style="flex:1;min-width:0;">
                         <div class="user-name" id="userName">—</div>
-                        <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text3);cursor:pointer;" id="sidebarUid" onclick="createBotCode()">код для бота</div>
+                        <div class="bot-code-link" id="sidebarUid" onclick="createBotCode()">КОД ДЛЯ БОТА</div>
                     </div>
                     <button class="btn-logout" onclick="doSignOut()">выйти</button>
                 </div>
@@ -327,7 +330,7 @@
                 <img class="mob-user-avatar" id="mobUserAvatar" src="" alt="" style="display:none">
                 <div style="flex:1;min-width:0;">
                     <div class="mob-user-name" id="mobUserName">—</div>
-                    <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text3);margin-top:2px;cursor:pointer;" id="mobUserUid" onclick="createBotCode()">код для бота</div>
+                    <div class="bot-code-link" id="mobUserUid" onclick="createBotCode()">КОД ДЛЯ БОТА</div>
                 </div>
             </div>
             <div class="mob-action-grid">
@@ -718,7 +721,7 @@
                 const text='/uid '+code;
                 navigator.clipboard.writeText(text).catch(()=>{});
                 const els=[document.getElementById('mobUserUid'),document.getElementById('sidebarUid')];
-                els.forEach(el=>{if(el){el.textContent='код: '+code;setTimeout(()=>{el.textContent='код для бота';},30000);}});
+                els.forEach(el=>{if(el){el.textContent='КОД: '+code;setTimeout(()=>{el.textContent='КОД ДЛЯ БОТА';},30000);}});
                 prompt('Отправь это боту в Telegram. Код действует 2 минуты:',text);
             }).catch(e=>{
                 console.error(e);
