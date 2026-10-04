@@ -11,39 +11,39 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
     <style>
-        :root { --radius: 10px; --sidebar-w: 340px; }
+        :root { --radius: 8px; --sidebar-w: 340px; }
 
         [data-theme="dark"] {
-            --bg:#0c0c0d;--bg2:#141416;--bg3:#1e1e22;--border:#282830;--border2:#38383f;
-            --text:#f2f2f5;--text2:#8a8a9a;--text3:#4a4a58;--accent:#c8ff40;--accent2:#9fd430;
-            --accentT:rgba(200,255,64,.12);--kal:#ffb240;--bel:#3de8b8;--zhir:#ff6060;--ug:#60aaff;
-            --kalT:rgba(255,178,64,.13);--belT:rgba(61,232,184,.11);--zhirT:rgba(255,96,96,.12);--ugT:rgba(96,170,255,.11);
+            --bg:#07080a;--bg2:#16181c;--bg3:#252930;--border:#3d434c;--border2:#525a66;
+            --text:#f6f6f8;--text2:#b4b6c2;--text3:#7a7e8c;--accent:#c8ff40;--accent2:#9fd430;
+            --accentT:rgba(200,255,64,.14);--kal:#ffb240;--bel:#3de8b8;--zhir:#ff6060;--ug:#60aaff;
+            --kalT:rgba(255,178,64,.15);--belT:rgba(61,232,184,.13);--zhirT:rgba(255,96,96,.14);--ugT:rgba(96,170,255,.13);
         }
         [data-theme="light"] {
-            --bg:#f5f5f0;--bg2:#ffffff;--bg3:#ebebea;--border:#e0e0da;--border2:#ccccca;
-            --text:#111114;--text2:#666672;--text3:#aaaaaa;--accent:#4a9600;--accent2:#357000;
-            --accentT:rgba(74,150,0,.1);--kal:#c06800;--bel:#008a62;--zhir:#cc2020;--ug:#1a66cc;
-            --kalT:rgba(192,104,0,.1);--belT:rgba(0,138,98,.1);--zhirT:rgba(204,32,32,.1);--ugT:rgba(26,102,204,.1);
+            --bg:#f0f2ee;--bg2:#ffffff;--bg3:#e4e8e2;--border:#c8cfc6;--border2:#aab4a8;
+            --text:#0e0e12;--text2:#4a4a56;--text3:#72727e;--accent:#4a9600;--accent2:#357000;
+            --accentT:rgba(74,150,0,.12);--kal:#c06800;--bel:#008a62;--zhir:#cc2020;--ug:#1a66cc;
+            --kalT:rgba(192,104,0,.12);--belT:rgba(0,138,98,.12);--zhirT:rgba(204,32,32,.12);--ugT:rgba(26,102,204,.12);
         }
-        [data-theme="bright"] {
-            --bg:#0d0022;--bg2:#130030;--bg3:#1c0040;--border:#2a0060;--border2:#3d0090;
-            --text:#f8f0ff;--text2:#b090d0;--text3:#6040a0;--accent:#e040fb;--accent2:#c020e0;
-            --accentT:rgba(224,64,251,.15);--kal:#ffcc00;--bel:#00e5cc;--zhir:#ff4488;--ug:#44ccff;
-            --kalT:rgba(255,204,0,.14);--belT:rgba(0,229,204,.12);--zhirT:rgba(255,68,136,.13);--ugT:rgba(68,204,255,.12);
+        [data-theme="ocean"] {
+            --bg:#071018;--bg2:#0f1e2a;--bg3:#173040;--border:#2a4a5e;--border2:#3d6a82;
+            --text:#e8f6fc;--text2:#8eb8cc;--text3:#5a8aa4;--accent:#38d4f0;--accent2:#1aa8c8;
+            --accentT:rgba(56,212,240,.14);--kal:#f0b848;--bel:#3dd4a8;--zhir:#f07088;--ug:#70b8ff;
+            --kalT:rgba(240,184,72,.14);--belT:rgba(61,212,168,.12);--zhirT:rgba(240,112,136,.13);--ugT:rgba(112,184,255,.12);
         }
 
         *{box-sizing:border-box;margin:0;padding:0;}
         html,body{height:100%;}
-        body{background:var(--bg);color:var(--text);font-family:'IBM Plex Sans',sans-serif;font-size:17px;line-height:1.65;transition:background .2s,color .2s;}
+        body{background:radial-gradient(circle at top right,var(--accentT),transparent 30rem),var(--bg);color:var(--text);font-family:'IBM Plex Sans',sans-serif;font-size:17px;line-height:1.65;transition:background .2s,color .2s;}
 
         /* LOGIN */
-        .login-screen{position:fixed;inset:0;background:var(--bg);z-index:1000;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:28px;}
+        .login-screen{position:fixed;inset:0;background:radial-gradient(circle at 50% 15%,var(--accentT),transparent 24rem),var(--bg);z-index:1000;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:28px;padding:24px;}
         .login-screen.hidden{display:none;}
         .login-logo{font-family:'IBM Plex Mono',monospace;font-size:36px;font-weight:500;color:var(--accent);letter-spacing:-1px;}
         .login-logo span{color:var(--text3);font-weight:400;}
         .login-sub{font-size:15px;color:var(--text2);text-align:center;line-height:1.8;}
-        .btn-google{display:flex;align-items:center;gap:12px;background:var(--bg2);border:1px solid var(--border2);color:var(--text);padding:14px 28px;border-radius:12px;font-size:16px;font-family:'IBM Plex Sans',sans-serif;cursor:pointer;transition:all .15s;}
-        .btn-google:hover{border-color:var(--accent);color:var(--accent);}
+        .btn-google{display:flex;align-items:center;gap:12px;background:var(--bg2);border:1px solid var(--border2);color:var(--text);padding:14px 28px;border-radius:var(--radius);font-size:16px;font-family:'IBM Plex Sans',sans-serif;cursor:pointer;transition:all .15s;box-shadow:0 16px 48px rgba(0,0,0,.22);}
+        .btn-google:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-1px);}
         .btn-google svg{width:20px;height:20px;flex-shrink:0;}
         .login-hint{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--text3);}
 
@@ -52,21 +52,25 @@
         .sync-dot.show{opacity:1;}
 
         .app{display:grid;grid-template-columns:var(--sidebar-w) 1fr;min-height:100vh;}
-        .sidebar{background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto;transition:background .2s;}
+        .sidebar{background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto;transition:background .2s;box-shadow:18px 0 60px rgba(0,0,0,.14);}
         .main{padding:44px;}
 
         /* LOGO */
         .logo{padding:28px 22px 20px;border-bottom:1px solid var(--border);}
-        .logo-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+        .logo-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px;flex-wrap:wrap;}
         .logo-title{font-family:'IBM Plex Mono',monospace;font-size:22px;font-weight:500;color:var(--accent);letter-spacing:-.5px;}
         .logo-title span{color:var(--text3);font-weight:400;}
+        .top-actions{display:flex;align-items:center;gap:10px;}
         .theme-switcher{display:flex;gap:7px;}
-        .theme-btn{width:30px;height:30px;border-radius:50%;border:2px solid transparent;cursor:pointer;transition:border-color .15s,transform .15s;padding:0;}
+        .theme-btn{width:26px;height:26px;border-radius:50%;border:2px solid transparent;cursor:pointer;transition:border-color .15s,transform .15s;padding:0;}
         .theme-btn:hover{transform:scale(1.2);}
         .theme-btn.active{border-color:var(--text);}
         .theme-btn[data-t="dark"]{background:#1e1e22;box-shadow:inset 0 0 0 1px #444;}
         .theme-btn[data-t="light"]{background:#f5f5f0;box-shadow:inset 0 0 0 1px #ccc;}
-        .theme-btn[data-t="bright"]{background:linear-gradient(135deg,#e040fb,#44ccff);}
+        .theme-btn[data-t="ocean"]{background:linear-gradient(135deg,#0f2a3a,#38d4f0);}
+        .lang-switcher{display:flex;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius);padding:2px;}
+        .lang-btn{background:none;border:none;color:var(--text3);font-family:'IBM Plex Mono',monospace;font-size:11px;padding:5px 7px;border-radius:6px;cursor:pointer;transition:background .15s,color .15s;}
+        .lang-btn.active{background:var(--accentT);color:var(--accent);}
 
         .user-row{display:flex;align-items:center;gap:8px;margin-bottom:12px;}
         .user-avatar{width:26px;height:26px;border-radius:50%;background:var(--bg3);border:1px solid var(--border2);flex-shrink:0;object-fit:cover;}
@@ -80,6 +84,7 @@
         .logo-btn{flex:1;background:var(--bg3);border:1px solid var(--border2);color:var(--text2);padding:9px 12px;border-radius:var(--radius);font-size:13px;font-family:'IBM Plex Mono',monospace;cursor:pointer;transition:all .15s;text-align:center;white-space:nowrap;}
         .logo-btn:hover{border-color:var(--accent);color:var(--accent);}
         .logo-btn.imp:hover{border-color:var(--ug);color:var(--ug);}
+        .logo-btn.danger:hover{border-color:var(--zhir);color:var(--zhir);}
 
         .week-nav{display:flex;align-items:center;gap:8px;padding:18px 22px;border-bottom:1px solid var(--border);}
         .week-label{flex:1;font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--text2);text-align:center;line-height:1.5;}
@@ -112,8 +117,8 @@
         .day-header h1{font-size:32px;font-weight:300;}
         .day-header .dh-date{font-family:'IBM Plex Mono',monospace;font-size:14px;color:var(--text3);}
         .day-totals-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:34px;}
-        .dt-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px;transition:border-color .15s;}
-        .dt-card:hover{border-color:var(--border2);}
+        .dt-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px;transition:border-color .15s,transform .15s;box-shadow:0 14px 34px rgba(0,0,0,.12);}
+        .dt-card:hover{border-color:var(--border2);transform:translateY(-1px);}
         .dt-val{font-family:'IBM Plex Mono',monospace;font-size:28px;font-weight:500;}
         .dt-key{font-size:13px;color:var(--text3);margin-top:5px;}
         .dt-card.k .dt-val{color:var(--kal);}
@@ -126,8 +131,8 @@
         .meal-name{font-size:12px;font-weight:500;color:var(--text2);text-transform:uppercase;letter-spacing:.12em;font-family:'IBM Plex Mono',monospace;}
         .meal-kcal{font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--kal);}
         .food-list{display:flex;flex-direction:column;gap:6px;}
-        .food-row{display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);transition:border-color .15s;}
-        .food-row:hover{border-color:var(--border2);}
+        .food-row{display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);transition:border-color .15s,background .15s;}
+        .food-row:hover{border-color:var(--border2);background:color-mix(in srgb,var(--bg2) 84%,var(--accentT));}
         .food-name{flex:1;font-size:15px;}
         .food-amount{font-size:13px;color:var(--text3);font-family:'IBM Plex Mono',monospace;white-space:nowrap;}
         .food-badges{display:flex;gap:5px;flex-shrink:0;}
@@ -144,7 +149,7 @@
 
         .confirm-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:300;display:none;align-items:center;justify-content:center;}
         .confirm-overlay.open{display:flex;}
-        .confirm-box{background:var(--bg2);border:1px solid var(--border2);border-radius:12px;padding:28px 32px;width:min(360px,calc(100vw - 48px));text-align:center;}
+        .confirm-box{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius);padding:28px 32px;width:min(360px,calc(100vw - 48px));text-align:center;box-shadow:0 24px 70px rgba(0,0,0,.35);}
         .confirm-box p{font-size:16px;margin-bottom:8px;}
         .confirm-box small{font-size:13px;color:var(--text2);}
         .confirm-actions{display:flex;gap:10px;justify-content:center;margin-top:22px;}
@@ -157,7 +162,7 @@
         .add-to-meal button{background:none;border:1px dashed var(--border2);color:var(--text3);padding:8px 16px;border-radius:var(--radius);cursor:pointer;font-size:14px;font-family:'IBM Plex Sans',sans-serif;transition:all .15s;}
         .add-to-meal button:hover{border-color:var(--accent);color:var(--accent);}
 
-        .add-panel{position:fixed;bottom:0;left:var(--sidebar-w);right:0;background:var(--bg2);border-top:1px solid var(--border);padding:18px 36px;display:flex;gap:12px;align-items:flex-end;z-index:100;transform:translateY(100%);transition:transform .22s ease;}
+        .add-panel{position:fixed;bottom:0;left:var(--sidebar-w);right:0;background:var(--bg2);border-top:1px solid var(--border);padding:18px 36px;display:flex;gap:12px;align-items:flex-end;z-index:100;transform:translateY(100%);transition:transform .22s ease;box-shadow:0 -18px 50px rgba(0,0,0,.22);}
         .add-panel.open{transform:translateY(0);}
         .add-panel-title{font-size:12px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;font-family:'IBM Plex Mono',monospace;margin-bottom:6px;}
         .add-panel .field{display:flex;flex-direction:column;gap:4px;}
@@ -173,7 +178,7 @@
 
         .search-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:200;display:none;align-items:flex-start;justify-content:center;padding-top:80px;}
         .search-overlay.open{display:flex;}
-        .search-box{background:var(--bg2);border:1px solid var(--border2);border-radius:12px;width:min(580px,calc(100vw - 32px));max-height:72vh;display:flex;flex-direction:column;overflow:hidden;}
+        .search-box{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius);width:min(580px,calc(100vw - 32px));max-height:72vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 24px 70px rgba(0,0,0,.36);}
         .search-input-wrap{padding:18px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;}
         .search-input-wrap input{flex:1;background:none;border:none;color:var(--text);font-size:18px;font-family:'IBM Plex Sans',sans-serif;outline:none;}
         .search-input-wrap input::placeholder{color:var(--text3);}
@@ -183,6 +188,25 @@
         .sr-name{flex:1;font-size:15px;}
         .sr-kcal{font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--kal);}
         .search-empty{padding:28px;text-align:center;color:var(--text3);font-size:15px;}
+        .search-add-db{flex-shrink:0;background:var(--accentT);border:1px solid var(--border2);color:var(--accent);padding:8px 12px;border-radius:var(--radius);font-size:12px;font-family:'IBM Plex Mono',monospace;cursor:pointer;white-space:nowrap;transition:all .15s;}
+        .search-add-db:hover{border-color:var(--accent);background:var(--accent);color:#0a0a0a;}
+        .search-empty-add{display:block;margin:14px auto 0;background:none;border:1px dashed var(--border2);color:var(--accent);padding:10px 18px;border-radius:var(--radius);font-size:14px;font-family:'IBM Plex Sans',sans-serif;cursor:pointer;transition:all .15s;}
+        .search-empty-add:hover{border-color:var(--accent);}
+        .sr-mine{font-family:'IBM Plex Mono',monospace;font-size:10px;background:var(--accentT);color:var(--accent);padding:2px 6px;border-radius:4px;margin-left:8px;vertical-align:middle;}
+        .sr-del{background:none;border:none;color:var(--text3);cursor:pointer;font-size:20px;line-height:1;padding:4px 6px;flex-shrink:0;border-radius:4px;transition:color .15s,background .15s;}
+        .sr-del:hover{color:var(--zhir);background:var(--zhirT);}
+
+        .db-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:250;display:none;align-items:center;justify-content:center;padding:24px;}
+        .db-overlay.open{display:flex;}
+        .db-box{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius);padding:24px 28px;width:min(480px,calc(100vw - 32px));box-shadow:0 24px 70px rgba(0,0,0,.36);}
+        .db-box h3{font-size:18px;font-weight:500;margin-bottom:18px;}
+        .db-form-grid{display:flex;flex-direction:column;gap:12px;}
+        .db-form-grid .field{display:flex;flex-direction:column;gap:4px;}
+        .db-form-grid input{background:var(--bg3);border:1px solid var(--border2);color:var(--text);padding:10px 14px;border-radius:var(--radius);font-family:'IBM Plex Sans',sans-serif;font-size:15px;outline:none;width:100%;transition:border-color .15s;}
+        .db-form-grid input:focus{border-color:var(--accent);}
+        .db-form-grid input::placeholder{color:var(--text3);}
+        .db-macros{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
+        .db-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:20px;}
 
         .mobile-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--bg2);border-top:1px solid var(--border);padding:10px 12px;z-index:90;gap:8px;align-items:center;overflow:hidden;box-sizing:border-box;}
         .mob-day-select{flex:1;min-width:0;background:var(--bg3);border:1px solid var(--border2);color:var(--text);padding:10px 8px;border-radius:var(--radius);font-size:14px;font-family:'IBM Plex Sans',sans-serif;outline:none;overflow:hidden;text-overflow:ellipsis;}
@@ -204,6 +228,8 @@
         .mob-theme-label{font-size:14px;color:var(--text2);flex:1;}
         .mob-theme-btns{display:flex;gap:10px;}
         .mob-theme-btns .theme-btn{width:28px;height:28px;}
+        .mob-lang-row{display:flex;align-items:center;gap:12px;padding:12px 20px;}
+        .mob-lang-label{font-size:14px;color:var(--text2);flex:1;}
         .mob-user-row{display:flex;align-items:center;gap:10px;padding:12px 20px;}
         .mob-user-avatar{width:32px;height:32px;border-radius:50%;background:var(--bg3);border:1px solid var(--border2);flex-shrink:0;object-fit:cover;}
         .mob-user-name{flex:1;font-size:13px;color:var(--text2);font-family:'IBM Plex Mono',monospace;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
@@ -243,7 +269,7 @@
     <!-- LOGIN -->
     <div class="login-screen" id="loginScreen">
         <div class="login-logo">Bizu<span>.tracker</span></div>
-        <div class="login-sub">Войди чтобы данные синхронизировались<br>между телефоном и компьютером</div>
+        <div class="login-sub" data-i18n-html="loginSub">Войди чтобы данные синхронизировались<br>между телефоном и компьютером</div>
         <button class="btn-google" id="btnGoogleLogin">
             <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
@@ -251,36 +277,43 @@
                 <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
                 <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
             </svg>
-            Войти через Google
+            <span data-i18n="loginGoogle">Войти через Google</span>
         </button>
         <div class="login-hint" id="loginHint"></div>
     </div>
 
-    <div class="sync-dot" id="syncDot">↑ сохранение...</div>
+    <div class="sync-dot" id="syncDot">↑ <span data-i18n="saving">сохранение...</span></div>
 
     <div class="app" id="appRoot" style="display:none">
         <aside class="sidebar">
             <div class="logo">
                 <div class="logo-top">
                     <div class="logo-title">Bizu<span>.tracker</span></div>
-                    <div class="theme-switcher">
-                        <button class="theme-btn" data-t="dark" onclick="setTheme('dark')" title="Тёмная"></button>
-                        <button class="theme-btn" data-t="light" onclick="setTheme('light')" title="Светлая"></button>
-                        <button class="theme-btn" data-t="bright" onclick="setTheme('bright')" title="Яркая"></button>
+                    <div class="top-actions">
+                        <div class="lang-switcher" aria-label="Language">
+                            <button class="lang-btn" data-lang="ru" onclick="setLang('ru')">RU</button>
+                            <button class="lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
+                        </div>
+                        <div class="theme-switcher">
+                            <button class="theme-btn" data-t="dark" onclick="setTheme('dark')" data-title-i18n="themeDark" title="Тёмная"></button>
+                            <button class="theme-btn" data-t="light" onclick="setTheme('light')" data-title-i18n="themeLight" title="Светлая"></button>
+                            <button class="theme-btn" data-t="ocean" onclick="setTheme('ocean')" data-title-i18n="themeOcean" title="Морская"></button>
+                        </div>
                     </div>
                 </div>
                 <div class="user-row">
                     <img class="user-avatar" id="userAvatar" src="" alt="">
                     <div style="flex:1;min-width:0;">
                         <div class="user-name" id="userName">—</div>
-                        <div class="bot-code-link" id="sidebarUid" onclick="createBotCode()">КОД ДЛЯ БОТА</div>
+                        <div class="bot-code-link" id="sidebarUid" onclick="createBotCode()" data-i18n="botCode">КОД ДЛЯ БОТА</div>
                     </div>
-                    <button class="btn-logout" onclick="doSignOut()">выйти</button>
+                    <button class="btn-logout" onclick="doSignOut()" data-i18n="logout">выйти</button>
                 </div>
                 <div class="logo-actions">
-                    <button class="logo-btn" onclick="exportJSON()">↓ отчёт</button>
-                    <button class="logo-btn" style="flex:none;width:auto;padding:9px 10px;" title="Скачать бэкап" onclick="backupData()">💾</button>
-                    <button class="logo-btn imp" onclick="document.getElementById('importFile').click()">↑ загрузить</button>
+                    <button class="logo-btn" onclick="exportJSON()">↓ <span data-i18n="report">отчёт</span></button>
+                    <button class="logo-btn" style="flex:none;width:auto;padding:9px 10px;" data-title-i18n="backupTitle" title="Скачать бэкап" onclick="backupData()">💾</button>
+                    <button class="logo-btn imp" onclick="document.getElementById('importFile').click()">↑ <span data-i18n="upload">загрузить</span></button>
+                    <button class="logo-btn danger" style="flex:none;width:auto;padding:9px 10px;" data-title-i18n="resetData" title="Очистить данные" onclick="resetAllData()">×</button>
                     <input type="file" id="importFile" accept=".json" style="display:none" onchange="importJSON(event)">
                 </div>
             </div>
@@ -291,12 +324,12 @@
             </div>
             <div class="days-list" id="daysList"></div>
             <div class="week-totals">
-                <div class="wt-title">Неделя итого</div>
+                <div class="wt-title" data-i18n="weekTotal">Неделя итого</div>
                 <div class="wt-grid">
-                    <div class="wt-item k"><div class="wt-val" id="wt-k">0</div><div class="wt-key">ккал</div></div>
-                    <div class="wt-item b"><div class="wt-val" id="wt-b">0</div><div class="wt-key">белки г</div></div>
-                    <div class="wt-item j"><div class="wt-val" id="wt-j">0</div><div class="wt-key">жиры г</div></div>
-                    <div class="wt-item u"><div class="wt-val" id="wt-u">0</div><div class="wt-key">углев г</div></div>
+                    <div class="wt-item k"><div class="wt-val" id="wt-k">0</div><div class="wt-key" data-i18n="kcal">ккал</div></div>
+                    <div class="wt-item b"><div class="wt-val" id="wt-b">0</div><div class="wt-key" data-i18n="proteinG">белки г</div></div>
+                    <div class="wt-item j"><div class="wt-val" id="wt-j">0</div><div class="wt-key" data-i18n="fatG">жиры г</div></div>
+                    <div class="wt-item u"><div class="wt-val" id="wt-u">0</div><div class="wt-key" data-i18n="carbsG">углев г</div></div>
                 </div>
             </div>
         </aside>
@@ -308,21 +341,28 @@
         <button class="mob-week-btn" id="mobPrev">&#x2039;</button>
         <select class="mob-day-select" id="mobDaySel" onchange="setDay(this.value)"></select>
         <button class="mob-week-btn" id="mobNext">&#x203a;</button>
-        <button class="mob-settings-btn" onclick="openMobSettings()" title="Настройки">&#x2699;</button>
+        <button class="mob-settings-btn" onclick="openMobSettings()" data-title-i18n="settings" title="Настройки">&#x2699;</button>
     </div>
 
     <!-- MOBILE SETTINGS SHEET -->
     <div class="mob-settings-overlay" id="mobSettingsOverlay" onclick="closeMobSettingsOutside(event)">
         <div class="mob-settings-sheet" id="mobSettingsSheet">
             <div class="mob-sheet-handle"></div>
-            <div class="mob-sheet-title">Настройки</div>
+            <div class="mob-sheet-title" data-i18n="settings">Настройки</div>
             <div class="mob-sheet-divider"></div>
             <div class="mob-theme-row">
-                <span class="mob-theme-label">Тема</span>
+                <span class="mob-theme-label" data-i18n="theme">Тема</span>
                 <div class="mob-theme-btns">
-                    <button class="theme-btn" data-t="dark" onclick="setTheme('dark')" title="Тёмная"></button>
-                    <button class="theme-btn" data-t="light" onclick="setTheme('light')" title="Светлая"></button>
-                    <button class="theme-btn" data-t="bright" onclick="setTheme('bright')" title="Яркая"></button>
+                    <button class="theme-btn" data-t="dark" onclick="setTheme('dark')" data-title-i18n="themeDark" title="Тёмная"></button>
+                    <button class="theme-btn" data-t="light" onclick="setTheme('light')" data-title-i18n="themeLight" title="Светлая"></button>
+                    <button class="theme-btn" data-t="ocean" onclick="setTheme('ocean')" data-title-i18n="themeOcean" title="Морская"></button>
+                </div>
+            </div>
+            <div class="mob-lang-row">
+                <span class="mob-lang-label" data-i18n="language">Язык</span>
+                <div class="lang-switcher" aria-label="Language">
+                    <button class="lang-btn" data-lang="ru" onclick="setLang('ru')">RU</button>
+                    <button class="lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
                 </div>
             </div>
             <div class="mob-sheet-divider"></div>
@@ -330,14 +370,15 @@
                 <img class="mob-user-avatar" id="mobUserAvatar" src="" alt="" style="display:none">
                 <div style="flex:1;min-width:0;">
                     <div class="mob-user-name" id="mobUserName">—</div>
-                    <div class="bot-code-link" id="mobUserUid" onclick="createBotCode()">КОД ДЛЯ БОТА</div>
+                    <div class="bot-code-link" id="mobUserUid" onclick="createBotCode()" data-i18n="botCode">КОД ДЛЯ БОТА</div>
                 </div>
             </div>
             <div class="mob-action-grid">
-                <button class="mob-action-btn" onclick="exportJSON();closeMobSettings()">&#x2193; отчёт</button>
-                <button class="mob-action-btn" onclick="backupData();closeMobSettings()">&#x1F4BE; бэкап</button>
-                <button class="mob-action-btn imp" onclick="document.getElementById('importFile').click();closeMobSettings()">&#x2191; загрузить</button>
-                <button class="mob-action-btn danger" onclick="closeMobSettings();doSignOut()">&#x23FB; выйти</button>
+                <button class="mob-action-btn" onclick="exportJSON();closeMobSettings()">&#x2193; <span data-i18n="report">отчёт</span></button>
+                <button class="mob-action-btn" onclick="backupData();closeMobSettings()">&#x1F4BE; <span data-i18n="backup">бэкап</span></button>
+                <button class="mob-action-btn imp" onclick="document.getElementById('importFile').click();closeMobSettings()">&#x2191; <span data-i18n="upload">загрузить</span></button>
+                <button class="mob-action-btn danger" onclick="closeMobSettings();resetAllData()">&#x2715; <span data-i18n="reset">сброс</span></button>
+                <button class="mob-action-btn danger" onclick="closeMobSettings();doSignOut()">&#x23FB; <span data-i18n="logout">выйти</span></button>
             </div>
         </div>
     </div>
@@ -345,49 +386,73 @@
     <!-- ADD PANEL -->
     <div class="add-panel" id="addPanel">
         <div class="field grow">
-            <div class="add-panel-title">Добавить — <span id="panelMealLabel">—</span></div>
+            <div class="add-panel-title"><span id="panelModeLabel" data-i18n="add">Добавить</span> — <span id="panelMealLabel">—</span></div>
             <div style="display:flex;gap:8px;">
                 <div class="field grow">
-                    <div class="field-label">Название</div>
-                    <input type="text" id="inp-name" placeholder="Гречка, курица..." autocomplete="off">
+                    <div class="field-label" data-i18n="name">Название</div>
+                    <input type="text" id="inp-name" data-placeholder-i18n="namePlaceholder" placeholder="Гречка, курица..." autocomplete="off">
                 </div>
                 <div class="field" style="width:90px;">
-                    <div class="field-label">Съел, г</div>
+                    <div class="field-label" data-i18n="amountG">Съел, г</div>
                     <input type="number" id="inp-amount" placeholder="100" min="0" oninput="recalc()">
                 </div>
             </div>
         </div>
-        <div class="field" style="width:80px;"><div class="field-label">ккал / 100г</div><input type="number" id="inp-k" placeholder="0" min="0" oninput="recalc()"></div>
-        <div class="field" style="width:76px;"><div class="field-label">белки / 100г</div><input type="number" id="inp-b" placeholder="0" min="0" step="0.1" oninput="recalc()"></div>
-        <div class="field" style="width:76px;"><div class="field-label">жиры / 100г</div><input type="number" id="inp-j" placeholder="0" min="0" step="0.1" oninput="recalc()"></div>
-        <div class="field" style="width:76px;"><div class="field-label">углев / 100г</div><input type="number" id="inp-u" placeholder="0" min="0" step="0.1" oninput="recalc()"></div>
+        <div class="field" style="width:80px;"><div class="field-label" data-i18n="kcal100">ккал / 100г</div><input type="number" id="inp-k" placeholder="0" min="0" oninput="recalc()"></div>
+        <div class="field" style="width:76px;"><div class="field-label" data-i18n="protein100">белки / 100г</div><input type="number" id="inp-b" placeholder="0" min="0" step="0.1" oninput="recalc()"></div>
+        <div class="field" style="width:76px;"><div class="field-label" data-i18n="fat100">жиры / 100г</div><input type="number" id="inp-j" placeholder="0" min="0" step="0.1" oninput="recalc()"></div>
+        <div class="field" style="width:76px;"><div class="field-label" data-i18n="carbs100">углев / 100г</div><input type="number" id="inp-u" placeholder="0" min="0" step="0.1" oninput="recalc()"></div>
         <div style="display:flex;flex-direction:column;gap:5px;align-items:center;">
             <div id="recalc-preview" style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--kal);text-align:center;min-height:16px;"></div>
-            <button class="btn-add" onclick="submitEntry()"><span id="btn-add-label">Добавить</span></button>
-            <button class="btn-cancel" onclick="closePanel()">Отмена</button>
+            <button class="btn-add" onclick="submitEntry()"><span id="btn-add-label" data-i18n="add">Добавить</span></button>
+            <button class="btn-cancel" onclick="closePanel()" data-i18n="cancel">Отмена</button>
         </div>
     </div>
 
     <!-- CONFIRM DELETE -->
     <div class="confirm-overlay" id="confirmOverlay">
         <div class="confirm-box">
-            <p>Удалить запись?</p>
+            <p data-i18n="deleteQuestion">Удалить запись?</p>
             <small id="confirmName">—</small>
             <div class="confirm-actions">
-                <button class="confirm-yes" onclick="confirmDelete()">Удалить</button>
-                <button class="confirm-no" onclick="closeConfirm()">Отмена</button>
+                <button class="confirm-yes" onclick="confirmDelete()" data-i18n="delete">Удалить</button>
+                <button class="confirm-no" onclick="closeConfirm()" data-i18n="cancel">Отмена</button>
             </div>
         </div>
     </div>
 
     <!-- SEARCH -->
     <div class="search-overlay" id="searchOverlay" onclick="closeSearch(event)">
-        <div class="search-box">
+        <div class="search-box" onclick="event.stopPropagation()">
             <div class="search-input-wrap">
                 <span style="color:var(--text3);">⌕</span>
-                <input type="text" id="searchInput" placeholder="Найти продукт..." oninput="filterSearch(this.value)">
+                <input type="text" id="searchInput" data-placeholder-i18n="searchPlaceholder" placeholder="Найти продукт..." oninput="filterSearch(this.value)">
+                <button type="button" class="search-add-db" onclick="openDbAdd()" data-i18n="addToDb">+ в базу</button>
             </div>
             <div class="search-results" id="searchResults"></div>
+        </div>
+    </div>
+
+    <!-- ADD TO DB -->
+    <div class="db-overlay" id="dbOverlay" onclick="closeDbAddOutside(event)">
+        <div class="db-box" onclick="event.stopPropagation()">
+            <h3 data-i18n="addToDbTitle">Добавить в базу</h3>
+            <div class="db-form-grid">
+                <div class="field">
+                    <div class="field-label" data-i18n="name">Название</div>
+                    <input type="text" id="db-inp-name" data-placeholder-i18n="namePlaceholder" placeholder="Гречка, курица..." autocomplete="off">
+                </div>
+                <div class="db-macros">
+                    <div class="field"><div class="field-label" data-i18n="kcal100">ккал / 100г</div><input type="number" id="db-inp-k" placeholder="0" min="0" step="1"></div>
+                    <div class="field"><div class="field-label" data-i18n="protein100">белки / 100г</div><input type="number" id="db-inp-b" placeholder="0" min="0" step="0.1"></div>
+                    <div class="field"><div class="field-label" data-i18n="fat100">жиры / 100г</div><input type="number" id="db-inp-j" placeholder="0" min="0" step="0.1"></div>
+                    <div class="field"><div class="field-label" data-i18n="carbs100">углев / 100г</div><input type="number" id="db-inp-u" placeholder="0" min="0" step="0.1"></div>
+                </div>
+            </div>
+            <div class="db-actions">
+                <button type="button" class="btn-cancel" onclick="closeDbAdd()" data-i18n="cancel">Отмена</button>
+                <button type="button" class="btn-add" onclick="submitDbProduct()" data-i18n="saveToDb">Сохранить</button>
+            </div>
         </div>
     </div>
 
@@ -407,18 +472,88 @@
         let currentUser = null;
         let unsubSnap   = null;
         let saveTimer   = null;
+        let lang = localStorage.getItem('kbju_lang') || 'ru';
+
+        const I18N = {
+            ru: {
+                loginSub:'Войди чтобы данные синхронизировались<br>между телефоном и компьютером',
+                loginGoogle:'Войти через Google', saving:'сохранение...', themeDark:'Тёмная', themeLight:'Светлая', themeOcean:'Морская',
+                botCode:'КОД ДЛЯ БОТА', logout:'выйти', report:'отчёт', upload:'загрузить', backup:'бэкап', backupTitle:'Скачать бэкап',
+                reset:'сброс', resetData:'Очистить данные', resetConfirm:'Очистить все записи и свои продукты? Это действие нельзя отменить.', resetDone:'Данные очищены.',
+                weekTotal:'Неделя итого', kcal:'ккал', proteinG:'белки г', fatG:'жиры г', carbsG:'углев г',
+                settings:'Настройки', theme:'Тема', language:'Язык', add:'Добавить', save:'Сохранить', cancel:'Отмена',
+                name:'Название', namePlaceholder:'Гречка, курица...', amountG:'Съел, г', kcal100:'ккал / 100г',
+                protein100:'белки / 100г', fat100:'жиры / 100г', carbs100:'углев / 100г', deleteQuestion:'Удалить запись?',
+                delete:'Удалить', searchPlaceholder:'Найти продукт...', openingGoogle:'открываем Google...', error:'Ошибка',
+                signOutConfirm:'Выйти из аккаунта?', thisWeek:'эта неделя', lastWeek:'прошлая', today:'сег', chooseDay:'Выбери день',
+                manual:'+ вручную', searchDb:'поиск по базе', edit:'Редактировать', editing:'редактирование', notFound:'Ничего не найдено',
+                addToDb:'+ в базу', addToDbTitle:'Добавить в базу', saveToDb:'Сохранить',
+                myProduct:'моё', addNotFound:'Добавить в базу', dbSaved:'Продукт добавлен в базу', deleteProductQuestion:'Удалить продукт из базы?',
+                dbNameRequired:'Введите название продукта',
+                gramsFor:'Граммы для', codePrefix:'КОД: ', botPrompt:'Отправь это боту в Telegram. Код действует 2 минуты:',
+                botFail:'Не удалось создать код для бота', loadBackup:'Загрузить бэкап? Найдено записей за ', daysMerge:' дн. Данные объединятся с текущими.',
+                loaded:'Загружено ', daysData:' дн. данных.', reportNotBackup:'Это отчёт для ИИ, не бэкап.\nИспользуй кнопку 💾 для бэкапа.',
+                importDays:'Импортировать ', daysQuestion:' дн. данных?', done:'Готово!', invalidJson:'Ошибка: невалидный JSON',
+                gramShort:'г',
+                days:['Воскресенье','Понедельник','Вторник','Среда','Четверг','Пятница','Суббота'],
+                meals:{'Завтрак':'Завтрак','Обед':'Обед','Перекус':'Перекус','Предтрен':'Предтрен','Ужин':'Ужин','Перед сном':'Перед сном'},
+                macros:{b:'Б',j:'Ж',u:'У'}
+            },
+            en: {
+                loginSub:'Sign in to sync your data<br>between phone and computer',
+                loginGoogle:'Sign in with Google', saving:'saving...', themeDark:'Dark', themeLight:'Light', themeOcean:'Ocean',
+                botCode:'BOT CODE', logout:'sign out', report:'report', upload:'upload', backup:'backup', backupTitle:'Download backup',
+                reset:'reset', resetData:'Clear data', resetConfirm:'Clear all entries and your custom products? This cannot be undone.', resetDone:'Data cleared.',
+                weekTotal:'Week total', kcal:'kcal', proteinG:'protein g', fatG:'fat g', carbsG:'carbs g',
+                settings:'Settings', theme:'Theme', language:'Language', add:'Add', save:'Save', cancel:'Cancel',
+                name:'Name', namePlaceholder:'Buckwheat, chicken...', amountG:'Eaten, g', kcal100:'kcal / 100g',
+                protein100:'protein / 100g', fat100:'fat / 100g', carbs100:'carbs / 100g', deleteQuestion:'Delete entry?',
+                delete:'Delete', searchPlaceholder:'Find food...', openingGoogle:'opening Google...', error:'Error',
+                signOutConfirm:'Sign out of your account?', thisWeek:'this week', lastWeek:'last week', today:'today', chooseDay:'Choose a day',
+                manual:'+ manual', searchDb:'search database', edit:'Edit', editing:'editing', notFound:'Nothing found',
+                addToDb:'+ to DB', addToDbTitle:'Add to database', saveToDb:'Save',
+                myProduct:'mine', addNotFound:'Add to database', dbSaved:'Product added to database', deleteProductQuestion:'Remove product from database?',
+                dbNameRequired:'Enter product name',
+                gramsFor:'Grams for', codePrefix:'CODE: ', botPrompt:'Send this to the Telegram bot. Code expires in 2 minutes:',
+                botFail:'Could not create bot code', loadBackup:'Load backup? Found entries for ', daysMerge:' days. Data will be merged with current records.',
+                loaded:'Loaded ', daysData:' days of data.', reportNotBackup:'This is an AI report, not a backup.\nUse the 💾 button for backup.',
+                importDays:'Import ', daysQuestion:' days of data?', done:'Done!', invalidJson:'Error: invalid JSON',
+                gramShort:'g',
+                days:['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'],
+                meals:{'Завтрак':'Breakfast','Обед':'Lunch','Перекус':'Snack','Предтрен':'Pre-workout','Ужин':'Dinner','Перед сном':'Before bed'},
+                macros:{b:'P',j:'F',u:'C'}
+            }
+        };
+
+        function tr(key){return I18N[lang][key] ?? I18N.ru[key] ?? key;}
+        function mealLabel(meal){return I18N[lang].meals[meal] || meal;}
+        function productName(p){return lang === 'en' && p.nEn ? p.nEn : p.n;}
+        function applyI18n(){
+            document.documentElement.lang = lang;
+            document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = tr(el.dataset.i18n); });
+            document.querySelectorAll('[data-i18n-html]').forEach(el => { el.innerHTML = tr(el.dataset.i18nHtml); });
+            document.querySelectorAll('[data-placeholder-i18n]').forEach(el => { el.placeholder = tr(el.dataset.placeholderI18n); });
+            document.querySelectorAll('[data-title-i18n]').forEach(el => { el.title = tr(el.dataset.titleI18n); });
+            document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.dataset.lang === lang));
+        }
+        function setLang(nextLang){
+            lang = nextLang;
+            localStorage.setItem('kbju_lang', lang);
+            applyI18n();
+            render();
+        }
 
         // ── AUTH ─────────────────────────────────────────────────────────
         document.getElementById('btnGoogleLogin').onclick = () => {
-            document.getElementById('loginHint').textContent = 'открываем Google...';
+            document.getElementById('loginHint').textContent = tr('openingGoogle');
             auth.signInWithPopup(new firebase.auth.GoogleAuthProvider())
                 .catch(err => {
-                    document.getElementById('loginHint').textContent = 'Ошибка: ' + err.message;
+                    document.getElementById('loginHint').textContent = tr('error') + ': ' + err.message;
                 });
         };
 
         function doSignOut() {
-            if (!confirm('Выйти из аккаунта?')) return;
+            if (!confirm(tr('signOutConfirm'))) return;
             if (unsubSnap) unsubSnap();
             auth.signOut();
         }
@@ -443,6 +578,7 @@
             } else {
                 if (unsubSnap) { unsubSnap(); unsubSnap = null; }
                 state.data = {};
+                state.products = [];
                 document.getElementById('loginScreen').classList.remove('hidden');
                 document.getElementById('loginHint').textContent = '';
                 document.getElementById('appRoot').style.display = 'none';
@@ -457,7 +593,11 @@
             unsubSnap = userDoc().onSnapshot(
                 snap => {
                     state.data = snap.exists ? (snap.data().data || {}) : {};
+                    state.products = snap.exists ? (snap.data().products || []) : [];
                     if (!state.activeDay) state.activeDay = dateKey(new Date());
+                    if (document.getElementById('searchOverlay').classList.contains('open')) {
+                        filterSearch(document.getElementById('searchInput').value);
+                    }
                     render();
                 },
                 err => {
@@ -474,36 +614,70 @@
             const dot = document.getElementById('syncDot');
             dot.classList.add('show');
             saveTimer = setTimeout(() => {
-                userDoc().set({ data: state.data }, { merge: true })
+                userDoc().set({ data: state.data, products: state.products }, { merge: true })
                     .then(() => dot.classList.remove('show'))
                     .catch(e => { dot.classList.remove('show'); console.error(e); });
             }, 600);
         }
 
+        function resetAllData() {
+            if (!currentUser) return;
+            if (!confirm(tr('resetConfirm'))) return;
+            clearTimeout(saveTimer);
+            state.data = {};
+            state.products = [];
+            state.weekOffset = 0;
+            state.activeDay = dateKey(new Date());
+            closePanel();
+            document.getElementById('searchOverlay').classList.remove('open');
+            document.getElementById('dbOverlay').classList.remove('open');
+            closeConfirm();
+            render();
+            const dot = document.getElementById('syncDot');
+            dot.classList.add('show');
+            userDoc().set({ data: {}, products: [] }, { merge: true })
+                .then(() => {
+                    dot.classList.remove('show');
+                    alert(tr('resetDone'));
+                })
+                .catch(e => {
+                    dot.classList.remove('show');
+                    console.error(e);
+                    alert(tr('error') + ': ' + e.message);
+                });
+        }
+
         // ── APP ──────────────────────────────────────────────────────────
-        const DAYS_RU = ['Воскресенье','Понедельник','Вторник','Среда','Четверг','Пятница','Суббота'];
         const MEALS   = ['Завтрак','Обед','Перекус','Предтрен','Ужин','Перед сном'];
-        const DB = [
-            {n:'Куриная грудь (варёная)',k:140,b:29,  j:2,  u:0.1},
-            {n:'Творог 5%',             k:121,b:16.8,j:5,  u:1.9},
-            {n:'Гречка варёная',        k:350,b:12.8,j:2.7,u:61 },
-            {n:'Овсянка на воде',       k:350,b:12,  j:1.5,u:15 },
-            {n:'Яйцо куриное (1 шт)',   k:143,b:13,  j:11, u:0.7},
-            {n:'Рис варёный',           k:360,b:6.7, j:0.6,u:80 },
-            {n:'Банан',                 k:92, b:1.1, j:0.4,u:22 },
-            {n:'Кефир 1%',              k:30, b:3,   j:1,  u:3.8},
-            {n:'Курица Копч.',          k:113,b:23.6,j:1.9,u:0.4},
-            {n:'Арахис',               k:620,b:26,  j:50, u:14 },
+        const DB_BUILTIN = [
+            {n:'Куриная грудь (варёная)',nEn:'Chicken breast (boiled)',k:140,b:29,  j:2,  u:0.1},
+            {n:'Творог 5%',nEn:'Cottage cheese 5%',             k:121,b:16.8,j:5,  u:1.9},
+            {n:'Гречка варёная',nEn:'Boiled buckwheat',        k:350,b:12.8,j:2.7,u:61 },
+            {n:'Овсянка на воде',nEn:'Oatmeal with water',       k:350,b:12,  j:1.5,u:15 },
+            {n:'Яйцо куриное (1 шт)',nEn:'Chicken egg (1 pc)',   k:143,b:13,  j:11, u:0.7},
+            {n:'Рис варёный',nEn:'Boiled rice',           k:360,b:6.7, j:0.6,u:80 },
+            {n:'Банан',nEn:'Banana',                 k:92, b:1.1, j:0.4,u:22 },
+            {n:'Кефир 1%',nEn:'Kefir 1%',              k:30, b:3,   j:1,  u:3.8},
+            {n:'Курица Копч.',nEn:'Smoked chicken',          k:113,b:23.6,j:1.9,u:0.4},
+            {n:'Арахис',nEn:'Peanuts',               k:620,b:26,  j:50, u:14 },
         ];
 
-        let state = { weekOffset:0, activeDay:null, data:{} };
+        let state = { weekOffset:0, activeDay:null, data:{}, products:[] };
+
+        function getProductDB(){ return [...state.products, ...DB_BUILTIN]; }
+        function escAttr(s){ return String(s).replace(/\\/g,'\\\\').replace(/'/g,"\\'"); }
 
         function setTheme(t) {
             document.documentElement.setAttribute('data-theme', t);
             localStorage.setItem('kbju_theme', t);
             document.querySelectorAll('.theme-btn').forEach(b => b.classList.toggle('active', b.dataset.t === t));
         }
-        (() => { setTheme(localStorage.getItem('kbju_theme') || 'dark'); })();
+        (() => {
+            let saved = localStorage.getItem('kbju_theme') || 'dark';
+            if (saved === 'bright') saved = 'ocean';
+            setTheme(saved);
+            applyI18n();
+        })();
 
         function getWeekDates(offset) {
             const now=new Date(), dow=now.getDay(), mon=new Date(now);
@@ -521,7 +695,8 @@
 
         function renderSidebar(){
             const days=getWeekDates(state.weekOffset);
-            const wt=state.weekOffset===0?'эта неделя':state.weekOffset===-1?'прошлая':`${state.weekOffset>0?'+':''}${state.weekOffset}н`;
+            const dayNames=I18N[lang].days;
+            const wt=state.weekOffset===0?tr('thisWeek'):state.weekOffset===-1?tr('lastWeek'):`${state.weekOffset>0?'+':''}${state.weekOffset}w`;
             document.getElementById('weekRange').textContent=`${fmtD(days[0])} – ${fmtD(days[6])}`;
             document.getElementById('weekTitle').textContent=wt;
             const today=dateKey(new Date());
@@ -531,8 +706,8 @@
                 wk+=t.k;wb+=t.b;wj+=t.j;wu+=t.u;
                 const isA=state.activeDay===key,isEmpty=t.k===0,isT=today===key;
                 html+=`<div class="day-item${isA?' active':''}${isEmpty?' empty':''}" onclick="setDay('${key}')">
-                    <div><div class="dname">${DAYS_RU[d.getDay()]}${isT?'<span class="today-pill">сег</span>':''}</div><div class="ddate">${fmtD(d)}</div></div>
-                    <div class="dcal">${isEmpty?'—':t.k+' ккал'}</div></div>`;
+                    <div><div class="dname">${dayNames[d.getDay()]}${isT?`<span class="today-pill">${tr('today')}</span>`:''}</div><div class="ddate">${fmtD(d)}</div></div>
+                    <div class="dcal">${isEmpty?'—':t.k+' '+tr('kcal')}</div></div>`;
             }
             document.getElementById('daysList').innerHTML=html;
             document.getElementById('wt-k').textContent=Math.round(wk);
@@ -542,13 +717,14 @@
             const sel=document.getElementById('mobDaySel');
             sel.innerHTML=days.map(d=>{
                 const key=dateKey(d),t=getDayTotals(key),isT=today===key;
-                return`<option value="${key}"${state.activeDay===key?' selected':''}>${DAYS_RU[d.getDay()]} ${fmtD(d)}${isT?' ★':''}${t.k>0?' · '+t.k+' ккал':''}</option>`;
+                return`<option value="${key}"${state.activeDay===key?' selected':''}>${dayNames[d.getDay()]} ${fmtD(d)}${isT?' ★':''}${t.k>0?' · '+t.k+' '+tr('kcal'):''}</option>`;
             }).join('');
         }
 
         function renderMain(){
             const key=state.activeDay;
-            if(!key){document.getElementById('mainContent').innerHTML='<div style="padding:60px 0;text-align:center;color:var(--text3);">Выбери день</div>';return;}
+            if(!key){document.getElementById('mainContent').innerHTML=`<div style="padding:60px 0;text-align:center;color:var(--text3);">${tr('chooseDay')}</div>`;return;}
+            const dayNames=I18N[lang].days, macro=I18N[lang].macros;
             const d=new Date(key+'T00:00:00'),t=getDayTotals(key),dayData=state.data[key]||{};
             let mealsHtml='';
             for(const meal of MEALS){
@@ -557,32 +733,32 @@
                     mk+=e.k;mb+=e.b;mj+=e.j;mu+=e.u;
                     rows+=`<div class="food-row">
                         <span class="food-name">${e.name}</span>
-                        ${e.amount?`<span class="food-amount">${e.amount}г</span>`:''}
+                        ${e.amount?`<span class="food-amount">${e.amount}${tr('gramShort')}</span>`:''}
                         <div class="food-badges">
                             <span class="badge k">${Math.round(e.k)}</span>
-                            <span class="badge b">Б${fmt1(e.b)}</span>
-                            <span class="badge j">Ж${fmt1(e.j)}</span>
-                            <span class="badge u">У${fmt1(e.u)}</span>
+                            <span class="badge b">${macro.b}${fmt1(e.b)}</span>
+                            <span class="badge j">${macro.j}${fmt1(e.j)}</span>
+                            <span class="badge u">${macro.u}${fmt1(e.u)}</span>
                         </div>
-                        <button class="edit-btn" onclick="openEditPanel('${key}','${meal}',${e.id})" title="Редактировать">✎</button>
+                        <button class="edit-btn" onclick="openEditPanel('${key}','${meal}',${e.id})" title="${tr('edit')}">✎</button>
                         <button class="del-btn" onclick="askDelete('${key}','${meal}',${e.id},'${e.name.replace(/'/g,"\\'")}')">×</button>
                     </div>`;
                 }
                 mealsHtml+=`<div class="meal-section">
-                    <div class="meal-header"><span class="meal-name">${meal}</span>${mk>0?`<span class="meal-kcal">${Math.round(mk)} ккал</span>`:''}</div>
+                    <div class="meal-header"><span class="meal-name">${mealLabel(meal)}</span>${mk>0?`<span class="meal-kcal">${Math.round(mk)} ${tr('kcal')}</span>`:''}</div>
                     <div class="food-list">${rows}</div>
                     <div class="add-to-meal">
-                        <button onclick="openPanel('${key}','${meal}')">+ вручную</button>
-                        <button onclick="openSearch('${key}','${meal}')">поиск по базе</button>
+                        <button onclick="openPanel('${key}','${meal}')">${tr('manual')}</button>
+                        <button onclick="openSearch('${key}','${meal}')">${tr('searchDb')}</button>
                     </div></div>`;
             }
             document.getElementById('mainContent').innerHTML=`
-                <div class="day-header"><h1>${DAYS_RU[d.getDay()]}</h1><span class="dh-date">${fmtD(d)}.${d.getFullYear()}</span></div>
+                <div class="day-header"><h1>${dayNames[d.getDay()]}</h1><span class="dh-date">${fmtD(d)}.${d.getFullYear()}</span></div>
                 ${t.k>0?`<div class="day-totals-bar">
-                    <div class="dt-card k"><div class="dt-val">${t.k}</div><div class="dt-key">ккал</div></div>
-                    <div class="dt-card b"><div class="dt-val">${t.b}</div><div class="dt-key">белки г</div></div>
-                    <div class="dt-card j"><div class="dt-val">${t.j}</div><div class="dt-key">жиры г</div></div>
-                    <div class="dt-card u"><div class="dt-val">${t.u}</div><div class="dt-key">углев г</div></div>
+                    <div class="dt-card k"><div class="dt-val">${t.k}</div><div class="dt-key">${tr('kcal')}</div></div>
+                    <div class="dt-card b"><div class="dt-val">${t.b}</div><div class="dt-key">${tr('proteinG')}</div></div>
+                    <div class="dt-card j"><div class="dt-val">${t.j}</div><div class="dt-key">${tr('fatG')}</div></div>
+                    <div class="dt-card u"><div class="dt-val">${t.u}</div><div class="dt-key">${tr('carbsG')}</div></div>
                 </div>`:''}${mealsHtml}`;
         }
 
@@ -592,14 +768,15 @@
         function recalc(){
             const g=parseFloat(document.getElementById('inp-amount').value);
             const k100=parseFloat(document.getElementById('inp-k').value);
-            document.getElementById('recalc-preview').textContent=(g>0&&k100>0)?`→ ${Math.round(k100*g/100)} ккал`:'';
+            document.getElementById('recalc-preview').textContent=(g>0&&k100>0)?`→ ${Math.round(k100*g/100)} ${tr('kcal')}`:'';
         }
 
         let panelDay=null,panelMeal=null;
         function openPanel(day,meal){
             panelDay=day;panelMeal=meal;editId=null;
-            document.getElementById('panelMealLabel').textContent=meal;
-            document.getElementById('btn-add-label').textContent='Добавить';
+            document.getElementById('panelModeLabel').textContent=tr('add');
+            document.getElementById('panelMealLabel').textContent=mealLabel(meal);
+            document.getElementById('btn-add-label').textContent=tr('add');
             document.getElementById('addPanel').classList.add('open');
             document.getElementById('recalc-preview').textContent='';
             setTimeout(()=>document.getElementById('inp-name').focus(),50);
@@ -608,7 +785,8 @@
             document.getElementById('addPanel').classList.remove('open');
             ['inp-name','inp-amount','inp-k','inp-b','inp-j','inp-u'].forEach(id=>document.getElementById(id).value='');
             document.getElementById('recalc-preview').textContent='';
-            document.getElementById('btn-add-label').textContent='Добавить';
+            document.getElementById('panelModeLabel').textContent=tr('add');
+            document.getElementById('btn-add-label').textContent=tr('add');
             editId=null;
         }
         function submitEntry(){
@@ -640,19 +818,64 @@
         }
         function closeSearch(e){if(e.target===document.getElementById('searchOverlay'))document.getElementById('searchOverlay').classList.remove('open');}
         function filterSearch(q){
-            const res=q.length<1?DB:DB.filter(p=>p.n.toLowerCase().includes(q.toLowerCase()));
+            const raw=q.trim();
+            const query=raw.toLowerCase();
+            const all=getProductDB();
+            const res=query.length<1?all:all.filter(p=>p.n.toLowerCase().includes(query)||(p.nEn||'').toLowerCase().includes(query));
+            const macro=I18N[lang].macros;
             document.getElementById('searchResults').innerHTML=res.length
-                ?res.map(p=>`<div class="search-result" onclick="addFromDB(${JSON.stringify(p).replace(/"/g,'&quot;')})">
-                    <span class="sr-name">${p.n}</span><span class="sr-kcal">${p.k} ккал</span>
-                    <span class="badge b">Б${p.b}</span><span class="badge j">Ж${p.j}</span><span class="badge u">У${p.u}</span>
-                </div>`).join('')
-                :'<div class="search-empty">Ничего не найдено</div>';
+                ?res.map(p=>{
+                    const payload=JSON.stringify(p).replace(/"/g,'&quot;');
+                    const mine=p.custom?`<span class="sr-mine">${tr('myProduct')}</span>`:'';
+                    const del=p.custom?`<button type="button" class="sr-del" onclick="event.stopPropagation();askDeleteProduct('${p.id}')" title="${tr('delete')}">×</button>`:'';
+                    return`<div class="search-result" onclick="addFromDB(${payload})">
+                    <span class="sr-name">${productName(p)}${mine}</span><span class="sr-kcal">${p.k} ${tr('kcal')}</span>
+                    <span class="badge b">${macro.b}${p.b}</span><span class="badge j">${macro.j}${p.j}</span><span class="badge u">${macro.u}${p.u}</span>${del}</div>`;
+                }).join('')
+                :`<div class="search-empty">${tr('notFound')}${raw?`<button type="button" class="search-empty-add" onclick="openDbAdd('${escAttr(raw)}')">${tr('addNotFound')}</button>`:''}</div>`;
+        }
+
+        function openDbAdd(prefill){
+            document.getElementById('db-inp-name').value=prefill||document.getElementById('searchInput').value.trim()||'';
+            ['db-inp-k','db-inp-b','db-inp-j','db-inp-u'].forEach(id=>document.getElementById(id).value='');
+            document.getElementById('dbOverlay').classList.add('open');
+            setTimeout(()=>document.getElementById('db-inp-name').focus(),50);
+        }
+        function closeDbAdd(){
+            document.getElementById('dbOverlay').classList.remove('open');
+        }
+        function closeDbAddOutside(e){if(e.target===document.getElementById('dbOverlay'))closeDbAdd();}
+        function submitDbProduct(){
+            const n=document.getElementById('db-inp-name').value.trim();
+            if(!n){alert(tr('dbNameRequired'));return;}
+            const product={
+                id:'p'+Date.now(),custom:true,n,
+                k:parseFloat(document.getElementById('db-inp-k').value)||0,
+                b:parseFloat(document.getElementById('db-inp-b').value)||0,
+                j:parseFloat(document.getElementById('db-inp-j').value)||0,
+                u:parseFloat(document.getElementById('db-inp-u').value)||0
+            };
+            state.products.unshift(product);
+            saveData();closeDbAdd();
+            if(document.getElementById('searchOverlay').classList.contains('open')){
+                document.getElementById('searchInput').value=n;
+                filterSearch(n);
+            }
+        }
+        document.getElementById('db-inp-u').addEventListener('keydown',e=>{if(e.key==='Enter')submitDbProduct();});
+
+        function askDeleteProduct(id){
+            if(!confirm(tr('deleteProductQuestion')))return;
+            state.products=state.products.filter(p=>p.id!==id);
+            saveData();
+            filterSearch(document.getElementById('searchInput').value);
         }
         function addFromDB(p){
-            const amount=prompt(`Граммы для "${p.n}":`, '100');
+            const name=productName(p);
+            const amount=prompt(`${tr('gramsFor')} "${name}":`, '100');
             if(amount===null)return;
             const g=parseFloat(amount)||100,m=g/100;
-            const entry={id:Date.now(),name:p.n,amount:g,k:Math.round(p.k*m),b:fmt1(p.b*m),j:fmt1(p.j*m),u:fmt1(p.u*m)};
+            const entry={id:Date.now(),name,amount:g,k:Math.round(p.k*m),b:fmt1(p.b*m),j:fmt1(p.j*m),u:fmt1(p.u*m)};
             if(!state.data[searchDay])state.data[searchDay]={};
             if(!state.data[searchDay][searchMeal])state.data[searchDay][searchMeal]=[];
             state.data[searchDay][searchMeal].push(entry);
@@ -680,7 +903,8 @@
             const entry=state.data[day]?.[meal]?.find(e=>e.id===id);
             if(!entry)return;
             panelDay=day;panelMeal=meal;editId=id;
-            document.getElementById('panelMealLabel').textContent=meal+' · редактирование';
+            document.getElementById('panelModeLabel').textContent=tr('save');
+            document.getElementById('panelMealLabel').textContent=mealLabel(meal)+' · '+tr('editing');
             document.getElementById('inp-name').value=entry.name;
             const g=entry.amount||100,m=g/100;
             document.getElementById('inp-amount').value=g;
@@ -688,7 +912,7 @@
             document.getElementById('inp-b').value=m?fmt1(entry.b/m):entry.b;
             document.getElementById('inp-j').value=m?fmt1(entry.j/m):entry.j;
             document.getElementById('inp-u').value=m?fmt1(entry.u/m):entry.u;
-            document.getElementById('btn-add-label').textContent='Сохранить';
+            document.getElementById('btn-add-label').textContent=tr('save');
             recalc();
             document.getElementById('addPanel').classList.add('open');
             setTimeout(()=>document.getElementById('inp-name').focus(),50);
@@ -721,15 +945,18 @@
                 const text='/uid '+code;
                 navigator.clipboard.writeText(text).catch(()=>{});
                 const els=[document.getElementById('mobUserUid'),document.getElementById('sidebarUid')];
-                els.forEach(el=>{if(el){el.textContent='КОД: '+code;setTimeout(()=>{el.textContent='КОД ДЛЯ БОТА';},30000);}});
-                prompt('Отправь это боту в Telegram. Код действует 2 минуты:',text);
+                els.forEach(el=>{if(el){el.textContent=tr('codePrefix')+code;setTimeout(()=>{el.textContent=tr('botCode');},30000);}});
+                prompt(tr('botPrompt'),text);
             }).catch(e=>{
                 console.error(e);
-                alert('Не удалось создать код для бота');
+                alert(tr('botFail'));
             });
         }
 
         function exportJSON(){
+            const keys = lang === 'en'
+                ? {total:'total',kcal:'kcal',protein:'protein',fat:'fat',carbs:'carbs',meals:'meals',name:'name',grams:'grams',products:'products'}
+                : {total:'итого',kcal:'ккал',protein:'белки',fat:'жиры',carbs:'углеводы',meals:'приёмы',name:'название',grams:'граммы',products:'продукты'};
             const weeks={};
             for(const key of Object.keys(state.data)){
                 const d=new Date(key+'T00:00:00'),dow=d.getDay(),mon=new Date(d);
@@ -743,13 +970,13 @@
                 out.weeks[wLabel]={};
                 for(const[dk,meals]of Object.entries(days)){
                     const dd=new Date(dk+'T00:00:00'),t=getDayTotals(dk);
-                    const dayLabel=`${DAYS_RU[dd.getDay()]} ${fmtD(dd)}`;
-                    out.weeks[wLabel][dayLabel]={итого:{ккал:t.k,белки:t.b,жиры:t.j,углеводы:t.u},приёмы:{}};
+                    const dayLabel=`${I18N[lang].days[dd.getDay()]} ${fmtD(dd)}`;
+                    out.weeks[wLabel][dayLabel]={[keys.total]:{[keys.kcal]:t.k,[keys.protein]:t.b,[keys.fat]:t.j,[keys.carbs]:t.u},[keys.meals]:{}};
                     for(const meal of MEALS){
                         const entries=meals[meal];if(!entries?.length)continue;
                         let mk=0,mb=0,mj=0,mu=0;
-                        const products=entries.map(e=>{mk+=e.k;mb+=e.b;mj+=e.j;mu+=e.u;return{название:e.name,...(e.amount?{граммы:e.amount}:{}),ккал:Math.round(e.k),белки:fmt1(e.b),жиры:fmt1(e.j),углеводы:fmt1(e.u)};});
-                        out.weeks[wLabel][dayLabel].приёмы[meal]={итого:{ккал:Math.round(mk),белки:fmt1(mb),жиры:fmt1(mj),углеводы:fmt1(mu)},продукты:products};
+                        const products=entries.map(e=>{mk+=e.k;mb+=e.b;mj+=e.j;mu+=e.u;return{[keys.name]:e.name,...(e.amount?{[keys.grams]:e.amount}:{}),[keys.kcal]:Math.round(e.k),[keys.protein]:fmt1(e.b),[keys.fat]:fmt1(e.j),[keys.carbs]:fmt1(e.u)};});
+                        out.weeks[wLabel][dayLabel][keys.meals][mealLabel(meal)]={[keys.total]:{[keys.kcal]:Math.round(mk),[keys.protein]:fmt1(mb),[keys.fat]:fmt1(mj),[keys.carbs]:fmt1(mu)},[keys.products]:products};
                     }
                 }
             }
@@ -760,7 +987,7 @@
 
         function backupData(){
             const a=document.createElement('a');
-            a.href=URL.createObjectURL(new Blob([JSON.stringify({__backup:true,exported_at:new Date().toISOString(),data:state.data},null,2)],{type:'application/json'}));
+            a.href=URL.createObjectURL(new Blob([JSON.stringify({__backup:true,exported_at:new Date().toISOString(),data:state.data,products:state.products},null,2)],{type:'application/json'}));
             a.download='bizu_backup_'+dateKey(new Date())+'.json';a.click();
         }
 
@@ -772,19 +999,20 @@
                     const raw=JSON.parse(e.target.result);
                     if(raw.__backup&&raw.data){
                         const count=Object.keys(raw.data).length;
-                        if(confirm('Загрузить бэкап? Найдено записей за '+count+' дн. Данные объединятся с текущими.')){
+                        if(confirm(tr('loadBackup')+count+tr('daysMerge'))){
                             state.data=Object.assign({},state.data,raw.data);
-                            saveData();render();alert('✅ Загружено '+count+' дн. данных.');
+                            if(Array.isArray(raw.products))state.products=raw.products;
+                            saveData();render();alert('✅ '+tr('loaded')+count+tr('daysData'));
                         }
                     }else if(raw.weeks){
-                        alert('Это отчёт для ИИ, не бэкап.\nИспользуй кнопку 💾 для бэкапа.');
+                        alert(tr('reportNotBackup'));
                     }else{
                         const count=Object.keys(raw).length;
-                        if(confirm('Импортировать '+count+' дн. данных?')){
-                            state.data=Object.assign({},state.data,raw);saveData();render();alert('✅ Готово!');
+                        if(confirm(tr('importDays')+count+tr('daysQuestion'))){
+                            state.data=Object.assign({},state.data,raw);saveData();render();alert('✅ '+tr('done'));
                         }
                     }
-                }catch{alert('Ошибка: невалидный JSON');}
+                }catch{alert(tr('invalidJson'));}
                 event.target.value='';
             };
             reader.readAsText(file);
