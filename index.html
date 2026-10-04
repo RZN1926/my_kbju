@@ -130,6 +130,10 @@
         .meal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
         .meal-name{font-size:12px;font-weight:500;color:var(--text2);text-transform:uppercase;letter-spacing:.12em;font-family:'IBM Plex Mono',monospace;}
         .meal-kcal{font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--kal);}
+        .meal-insert{display:flex;align-items:center;gap:10px;margin:0 0 14px;color:var(--text3);}
+        .meal-insert:before,.meal-insert:after{content:"";height:1px;background:var(--border);flex:1;}
+        .meal-insert button{background:var(--bg2);border:1px dashed var(--border2);color:var(--text3);padding:6px 12px;border-radius:var(--radius);cursor:pointer;font-size:12px;font-family:'IBM Plex Mono',monospace;transition:all .15s;white-space:nowrap;}
+        .meal-insert button:hover{border-color:var(--accent);color:var(--accent);}
         .food-list{display:flex;flex-direction:column;gap:6px;}
         .food-row{display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);transition:border-color .15s,background .15s;}
         .food-row:hover{border-color:var(--border2);background:color-mix(in srgb,var(--bg2) 84%,var(--accentT));}
@@ -473,6 +477,7 @@
         let unsubSnap   = null;
         let saveTimer   = null;
         let lang = localStorage.getItem('kbju_lang') || 'ru';
+        const DEFAULT_MEALS = ['Завтрак','Обед','Ужин'];
 
         const I18N = {
             ru: {
@@ -480,6 +485,7 @@
                 loginGoogle:'Войти через Google', saving:'сохранение...', themeDark:'Тёмная', themeLight:'Светлая', themeOcean:'Морская',
                 botCode:'КОД ДЛЯ БОТА', logout:'выйти', report:'отчёт', upload:'загрузить', backup:'бэкап', backupTitle:'Скачать бэкап',
                 reset:'сброс', resetData:'Очистить данные', resetConfirm:'Очистить все записи и свои продукты? Это действие нельзя отменить.', resetDone:'Данные очищены.',
+                addMeal:'добавить приём', customMealPrompt:'Название нового приёма пищи:', mealExists:'Такой приём уже есть.',
                 weekTotal:'Неделя итого', kcal:'ккал', proteinG:'белки г', fatG:'жиры г', carbsG:'углев г',
                 settings:'Настройки', theme:'Тема', language:'Язык', add:'Добавить', save:'Сохранить', cancel:'Отмена',
                 name:'Название', namePlaceholder:'Гречка, курица...', amountG:'Съел, г', kcal100:'ккал / 100г',
@@ -504,6 +510,7 @@
                 loginGoogle:'Sign in with Google', saving:'saving...', themeDark:'Dark', themeLight:'Light', themeOcean:'Ocean',
                 botCode:'BOT CODE', logout:'sign out', report:'report', upload:'upload', backup:'backup', backupTitle:'Download backup',
                 reset:'reset', resetData:'Clear data', resetConfirm:'Clear all entries and your custom products? This cannot be undone.', resetDone:'Data cleared.',
+                addMeal:'add meal', customMealPrompt:'New meal name:', mealExists:'This meal already exists.',
                 weekTotal:'Week total', kcal:'kcal', proteinG:'protein g', fatG:'fat g', carbsG:'carbs g',
                 settings:'Settings', theme:'Theme', language:'Language', add:'Add', save:'Save', cancel:'Cancel',
                 name:'Name', namePlaceholder:'Buckwheat, chicken...', amountG:'Eaten, g', kcal100:'kcal / 100g',
@@ -579,6 +586,7 @@
                 if (unsubSnap) { unsubSnap(); unsubSnap = null; }
                 state.data = {};
                 state.products = [];
+                state.meals = [...DEFAULT_MEALS];
                 document.getElementById('loginScreen').classList.remove('hidden');
                 document.getElementById('loginHint').textContent = '';
                 document.getElementById('appRoot').style.display = 'none';
@@ -594,6 +602,7 @@
                 snap => {
                     state.data = snap.exists ? (snap.data().data || {}) : {};
                     state.products = snap.exists ? (snap.data().products || []) : [];
+                    state.meals = normalizeMeals(snap.exists ? snap.data().meals : null, state.data);
                     if (!state.activeDay) state.activeDay = dateKey(new Date());
                     if (document.getElementById('searchOverlay').classList.contains('open')) {
                         filterSearch(document.getElementById('searchInput').value);
@@ -614,7 +623,7 @@
             const dot = document.getElementById('syncDot');
             dot.classList.add('show');
             saveTimer = setTimeout(() => {
-                userDoc().set({ data: state.data, products: state.products }, { merge: true })
+                userDoc().set({ data: state.data, products: state.products, meals: state.meals }, { merge: true })
                     .then(() => dot.classList.remove('show'))
                     .catch(e => { dot.classList.remove('show'); console.error(e); });
             }, 600);
@@ -626,6 +635,7 @@
             clearTimeout(saveTimer);
             state.data = {};
             state.products = [];
+            state.meals = [...DEFAULT_MEALS];
             state.weekOffset = 0;
             state.activeDay = dateKey(new Date());
             closePanel();
@@ -635,7 +645,7 @@
             render();
             const dot = document.getElementById('syncDot');
             dot.classList.add('show');
-            userDoc().set({ data: {}, products: [] }, { merge: true })
+            userDoc().set({ data: {}, products: [], meals: [...DEFAULT_MEALS] }, { merge: true })
                 .then(() => {
                     dot.classList.remove('show');
                     alert(tr('resetDone'));
@@ -648,7 +658,6 @@
         }
 
         // ── APP ──────────────────────────────────────────────────────────
-        const MEALS   = ['Завтрак','Обед','Перекус','Предтрен','Ужин','Перед сном'];
         const DB_BUILTIN = [
             {n:'Куриная грудь (варёная)',nEn:'Chicken breast (boiled)',k:140,b:29,  j:2,  u:0.1},
             {n:'Творог 5%',nEn:'Cottage cheese 5%',             k:121,b:16.8,j:5,  u:1.9},
@@ -662,10 +671,31 @@
             {n:'Арахис',nEn:'Peanuts',               k:620,b:26,  j:50, u:14 },
         ];
 
-        let state = { weekOffset:0, activeDay:null, data:{}, products:[] };
+        let state = { weekOffset:0, activeDay:null, data:{}, products:[], meals:[...DEFAULT_MEALS] };
 
         function getProductDB(){ return [...state.products, ...DB_BUILTIN]; }
         function escAttr(s){ return String(s).replace(/\\/g,'\\\\').replace(/'/g,"\\'"); }
+        function uniqueNonEmpty(items){
+            const seen=new Set(),out=[];
+            for(const item of items||[]){
+                const name=String(item||'').trim();
+                if(name&&!seen.has(name)){seen.add(name);out.push(name);}
+            }
+            return out;
+        }
+        function normalizeMeals(savedMeals,data){
+            const base=uniqueNonEmpty(Array.isArray(savedMeals)&&savedMeals.length?savedMeals:DEFAULT_MEALS);
+            const seen=new Set(base);
+            for(const day of Object.values(data||{})){
+                for(const meal of Object.keys(day||{})){
+                    if(!seen.has(meal)){seen.add(meal);base.push(meal);}
+                }
+            }
+            return base.length?base:[...DEFAULT_MEALS];
+        }
+        function getMealOrder(dayData){
+            return normalizeMeals(state.meals, state.data).filter(meal => state.meals.includes(meal) || (dayData&&dayData[meal]?.length));
+        }
 
         function setTheme(t) {
             document.documentElement.setAttribute('data-theme', t);
@@ -689,7 +719,7 @@
         function fmtD(d){return `${d.getDate().toString().padStart(2,'0')}.${(d.getMonth()+1).toString().padStart(2,'0')}`;}
         function getDayTotals(key){
             const day=state.data[key]||{};let k=0,b=0,j=0,u=0;
-            for(const m of MEALS)for(const e of(day[m]||[])){k+=e.k;b+=e.b;j+=e.j;u+=e.u;}
+            for(const m of getMealOrder(day))for(const e of(day[m]||[])){k+=e.k;b+=e.b;j+=e.j;u+=e.u;}
             return{k:Math.round(k),b:fmt1(b),j:fmt1(j),u:fmt1(u)};
         }
 
@@ -727,10 +757,12 @@
             const dayNames=I18N[lang].days, macro=I18N[lang].macros;
             const d=new Date(key+'T00:00:00'),t=getDayTotals(key),dayData=state.data[key]||{};
             let mealsHtml='';
-            for(const meal of MEALS){
+            const mealOrder=getMealOrder(dayData);
+            mealOrder.forEach((meal,index)=>{
                 const entries=dayData[meal]||[];let mk=0,mb=0,mj=0,mu=0,rows='';
                 for(const e of entries){
                     mk+=e.k;mb+=e.b;mj+=e.j;mu+=e.u;
+                    const mealArg=escAttr(meal);
                     rows+=`<div class="food-row">
                         <span class="food-name">${e.name}</span>
                         ${e.amount?`<span class="food-amount">${e.amount}${tr('gramShort')}</span>`:''}
@@ -740,18 +772,21 @@
                             <span class="badge j">${macro.j}${fmt1(e.j)}</span>
                             <span class="badge u">${macro.u}${fmt1(e.u)}</span>
                         </div>
-                        <button class="edit-btn" onclick="openEditPanel('${key}','${meal}',${e.id})" title="${tr('edit')}">✎</button>
-                        <button class="del-btn" onclick="askDelete('${key}','${meal}',${e.id},'${e.name.replace(/'/g,"\\'")}')">×</button>
+                        <button class="edit-btn" onclick="openEditPanel('${key}','${mealArg}',${e.id})" title="${tr('edit')}">✎</button>
+                        <button class="del-btn" onclick="askDelete('${key}','${mealArg}',${e.id},'${escAttr(e.name)}')">×</button>
                     </div>`;
                 }
+                const mealArg=escAttr(meal);
                 mealsHtml+=`<div class="meal-section">
+                    <div class="meal-insert"><button onclick="addCustomMeal(${index})">+ ${tr('addMeal')}</button></div>
                     <div class="meal-header"><span class="meal-name">${mealLabel(meal)}</span>${mk>0?`<span class="meal-kcal">${Math.round(mk)} ${tr('kcal')}</span>`:''}</div>
                     <div class="food-list">${rows}</div>
                     <div class="add-to-meal">
-                        <button onclick="openPanel('${key}','${meal}')">${tr('manual')}</button>
-                        <button onclick="openSearch('${key}','${meal}')">${tr('searchDb')}</button>
+                        <button onclick="openPanel('${key}','${mealArg}')">${tr('manual')}</button>
+                        <button onclick="openSearch('${key}','${mealArg}')">${tr('searchDb')}</button>
                     </div></div>`;
-            }
+            });
+            mealsHtml+=`<div class="meal-insert"><button onclick="addCustomMeal(${mealOrder.length})">+ ${tr('addMeal')}</button></div>`;
             document.getElementById('mainContent').innerHTML=`
                 <div class="day-header"><h1>${dayNames[d.getDay()]}</h1><span class="dh-date">${fmtD(d)}.${d.getFullYear()}</span></div>
                 ${t.k>0?`<div class="day-totals-bar">
@@ -764,6 +799,21 @@
 
         function render(){renderSidebar();renderMain();}
         function setDay(key){state.activeDay=key;render();}
+
+        function addCustomMeal(index){
+            const name=prompt(tr('customMealPrompt'),'');
+            const meal=String(name||'').trim();
+            if(!meal)return;
+            const meals=normalizeMeals(state.meals,state.data);
+            if(meals.some(m=>m.toLowerCase()===meal.toLowerCase())){
+                alert(tr('mealExists'));
+                return;
+            }
+            meals.splice(Math.max(0,Math.min(index,meals.length)),0,meal);
+            state.meals=meals;
+            saveData();
+            render();
+        }
 
         function recalc(){
             const g=parseFloat(document.getElementById('inp-amount').value);
@@ -972,7 +1022,7 @@
                     const dd=new Date(dk+'T00:00:00'),t=getDayTotals(dk);
                     const dayLabel=`${I18N[lang].days[dd.getDay()]} ${fmtD(dd)}`;
                     out.weeks[wLabel][dayLabel]={[keys.total]:{[keys.kcal]:t.k,[keys.protein]:t.b,[keys.fat]:t.j,[keys.carbs]:t.u},[keys.meals]:{}};
-                    for(const meal of MEALS){
+                    for(const meal of getMealOrder(meals)){
                         const entries=meals[meal];if(!entries?.length)continue;
                         let mk=0,mb=0,mj=0,mu=0;
                         const products=entries.map(e=>{mk+=e.k;mb+=e.b;mj+=e.j;mu+=e.u;return{[keys.name]:e.name,...(e.amount?{[keys.grams]:e.amount}:{}),[keys.kcal]:Math.round(e.k),[keys.protein]:fmt1(e.b),[keys.fat]:fmt1(e.j),[keys.carbs]:fmt1(e.u)};});
@@ -987,7 +1037,7 @@
 
         function backupData(){
             const a=document.createElement('a');
-            a.href=URL.createObjectURL(new Blob([JSON.stringify({__backup:true,exported_at:new Date().toISOString(),data:state.data,products:state.products},null,2)],{type:'application/json'}));
+            a.href=URL.createObjectURL(new Blob([JSON.stringify({__backup:true,exported_at:new Date().toISOString(),data:state.data,products:state.products,meals:state.meals},null,2)],{type:'application/json'}));
             a.download='bizu_backup_'+dateKey(new Date())+'.json';a.click();
         }
 
@@ -1002,6 +1052,7 @@
                         if(confirm(tr('loadBackup')+count+tr('daysMerge'))){
                             state.data=Object.assign({},state.data,raw.data);
                             if(Array.isArray(raw.products))state.products=raw.products;
+                            state.meals=normalizeMeals(raw.meals,state.data);
                             saveData();render();alert('✅ '+tr('loaded')+count+tr('daysData'));
                         }
                     }else if(raw.weeks){
@@ -1009,7 +1060,7 @@
                     }else{
                         const count=Object.keys(raw).length;
                         if(confirm(tr('importDays')+count+tr('daysQuestion'))){
-                            state.data=Object.assign({},state.data,raw);saveData();render();alert('✅ '+tr('done'));
+                            state.data=Object.assign({},state.data,raw);state.meals=normalizeMeals(state.meals,state.data);saveData();render();alert('✅ '+tr('done'));
                         }
                     }
                 }catch{alert(tr('invalidJson'));}
