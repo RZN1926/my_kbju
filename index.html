@@ -496,11 +496,11 @@
                 addToDb:'+ в базу', addToDbTitle:'Добавить в базу', saveToDb:'Сохранить',
                 myProduct:'моё', addNotFound:'Добавить в базу', dbSaved:'Продукт добавлен в базу', deleteProductQuestion:'Удалить продукт из базы?',
                 dbNameRequired:'Введите название продукта',
-                gramsFor:'Граммы для', codePrefix:'КОД: ', botPrompt:'Отправь это боту в Telegram. Код действует 2 минуты:',
+                gramsFor:'Граммы для', piecesFor:'Количество для', codePrefix:'КОД: ', botPrompt:'Отправь это боту в Telegram. Код действует 2 минуты:',
                 botFail:'Не удалось создать код для бота', loadBackup:'Загрузить бэкап? Найдено записей за ', daysMerge:' дн. Данные объединятся с текущими.',
                 loaded:'Загружено ', daysData:' дн. данных.', reportNotBackup:'Это отчёт для ИИ, не бэкап.\nИспользуй кнопку 💾 для бэкапа.',
                 importDays:'Импортировать ', daysQuestion:' дн. данных?', done:'Готово!', invalidJson:'Ошибка: невалидный JSON',
-                gramShort:'г',
+                gramShort:'г', pieceShort:'шт',
                 days:['Воскресенье','Понедельник','Вторник','Среда','Четверг','Пятница','Суббота'],
                 meals:{'Завтрак':'Завтрак','Обед':'Обед','Перекус':'Перекус','Предтрен':'Предтрен','Ужин':'Ужин','Перед сном':'Перед сном'},
                 macros:{b:'Б',j:'Ж',u:'У'}
@@ -521,11 +521,11 @@
                 addToDb:'+ to DB', addToDbTitle:'Add to database', saveToDb:'Save',
                 myProduct:'mine', addNotFound:'Add to database', dbSaved:'Product added to database', deleteProductQuestion:'Remove product from database?',
                 dbNameRequired:'Enter product name',
-                gramsFor:'Grams for', codePrefix:'CODE: ', botPrompt:'Send this to the Telegram bot. Code expires in 2 minutes:',
+                gramsFor:'Grams for', piecesFor:'Quantity for', codePrefix:'CODE: ', botPrompt:'Send this to the Telegram bot. Code expires in 2 minutes:',
                 botFail:'Could not create bot code', loadBackup:'Load backup? Found entries for ', daysMerge:' days. Data will be merged with current records.',
                 loaded:'Loaded ', daysData:' days of data.', reportNotBackup:'This is an AI report, not a backup.\nUse the 💾 button for backup.',
                 importDays:'Import ', daysQuestion:' days of data?', done:'Done!', invalidJson:'Error: invalid JSON',
-                gramShort:'g',
+                gramShort:'g', pieceShort:'pc',
                 days:['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'],
                 meals:{'Завтрак':'Breakfast','Обед':'Lunch','Перекус':'Snack','Предтрен':'Pre-workout','Ужин':'Dinner','Перед сном':'Before bed'},
                 macros:{b:'P',j:'F',u:'C'}
@@ -663,7 +663,7 @@
             {n:'Творог 5%',nEn:'Cottage cheese 5%',             k:121,b:16.8,j:5,  u:1.9},
             {n:'Гречка варёная',nEn:'Boiled buckwheat',        k:350,b:12.8,j:2.7,u:61 },
             {n:'Овсянка на воде',nEn:'Oatmeal with water',       k:350,b:12,  j:1.5,u:15 },
-            {n:'Яйцо куриное (1 шт)',nEn:'Chicken egg (1 pc)',   k:143,b:13,  j:11, u:0.7},
+            {n:'Яйцо куриное C0',nEn:'Chicken egg C0',   k:84,b:7.2, j:6.4,  u:0.4,unit:'egg'},
             {n:'Рис варёный',nEn:'Boiled rice',           k:360,b:6.7, j:0.6,u:80 },
             {n:'Банан',nEn:'Banana',                 k:92, b:1.1, j:0.4,u:22 },
             {n:'Кефир 1%',nEn:'Kefir 1%',              k:30, b:3,   j:1,  u:3.8},
@@ -765,7 +765,7 @@
                     const mealArg=escAttr(meal);
                     rows+=`<div class="food-row">
                         <span class="food-name">${e.name}</span>
-                        ${e.amount?`<span class="food-amount">${e.amount}${tr('gramShort')}</span>`:''}
+                        ${e.amount?`<span class="food-amount">${e.amount}${e.amountUnit==='piece'?tr('pieceShort'):tr('gramShort')}</span>`:''}
                         <div class="food-badges">
                             <span class="badge k">${Math.round(e.k)}</span>
                             <span class="badge b">${macro.b}${fmt1(e.b)}</span>
@@ -922,10 +922,12 @@
         }
         function addFromDB(p){
             const name=productName(p);
-            const amount=prompt(`${tr('gramsFor')} "${name}":`, '100');
+            const isPiece=p.unit==='egg';
+            const amount=prompt(`${isPiece?tr('piecesFor'):tr('gramsFor')} "${name}":`, isPiece?'1':'100');
             if(amount===null)return;
-            const g=parseFloat(amount)||100,m=g/100;
-            const entry={id:Date.now(),name,amount:g,k:Math.round(p.k*m),b:fmt1(p.b*m),j:fmt1(p.j*m),u:fmt1(p.u*m)};
+            const qty=parseFloat(amount)||(isPiece?1:100);
+            const m=isPiece?qty:qty/100;
+            const entry={id:Date.now(),name,amount:qty,...(isPiece?{amountUnit:'piece'}:{}),k:Math.round(p.k*m),b:fmt1(p.b*m),j:fmt1(p.j*m),u:fmt1(p.u*m)};
             if(!state.data[searchDay])state.data[searchDay]={};
             if(!state.data[searchDay][searchMeal])state.data[searchDay][searchMeal]=[];
             state.data[searchDay][searchMeal].push(entry);
